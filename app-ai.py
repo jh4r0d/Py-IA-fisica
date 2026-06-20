@@ -143,7 +143,7 @@ if modo_explicacion == "👶 Modo Niño (Para que tu sobrinito entienda)":
             0% { opacity: 0; transform: translate(0px, 0px); }
             15% { opacity: 0.4; }
             40% { transform: translate(30px, 60px); opacity: 0.4; }
-            45% { opacity: 0; transform: translate(30px, 60px); }
+            45% { transform: translate(30px, 60px); }
             50% { transform: translate(-10px, -100px); opacity: 0; }
             55% { opacity: 0.4; }
             95% { transform: translate(20px, -40px); opacity: 0.4; }
@@ -208,8 +208,15 @@ else:
 st.title("👨‍🏫 AIrtin: Tu Profesor de Física 1")
 st.write("¡A ver, entren, entren! Saquen una hoja... mentira. Pregúntame lo que quieras de física, teoría o problemas. Puedes hablarme, escribirme o subir la foto de ese ejercicio que no te sale.")
 
-API_KEY = "AQ.Ab8RN6JvCsVZXOqrtj1qfrR1o0z0GYW5gzfR5iArhc6tihqO6Q"
-client = genai.Client(api_key=API_KEY)
+# --- POOL DE CLAVES API INCORPORADO ---
+POOL_KEYS = [
+    "AQ.Ab8RN6JvCsVZXOqrtj1qfrR1o0z0GYW5gzfR5iArhc6tihqO6Q",
+    "AIzaSyB7tGeuVKL_1Wz85UZdqCeL60Eh8YHD_6w",
+    "AIzaSyDBAG8oax2hRyuIzuSIWPp5-H-dvUNP_VE"
+]
+# Seleccionamos una llave aleatoria en cada recarga
+API_KEY_ACTUAL = random.choice(POOL_KEYS)
+client = genai.Client(api_key=API_KEY_ACTUAL)
 
 st.sidebar.markdown("---")
 st.sidebar.header("📁 Adjuntar Ejercicio")
@@ -309,9 +316,9 @@ if prompt:
                     texto_limpio = re.sub(r'\s+', ' ', texto_limpio).strip()
                     
                     js_audio = f"""
-                    <div style="margin-top:15px; background: rgba(0,0,0,0.03); padding: 12px; border-radius: 10px; border-left: 4px solid {btn_color};">
+                    <div style="margin-top:15px; background: rgba(0,0,0,0.03); padding: 12px; border-radius: 10px; border-left: 4px solid {btn_color if 'btn_color' in locals() else '#ec4899'};">
                         <p style="font-size:14px; color:#2c3e50; font-family: 'Comic Sans MS', sans-serif; margin:0 0 8px 0;">🔊 <b>¡AIrtin te está leyendo la respuesta en voz alta!</b></p>
-                        <button onclick="window.speakResponse(true)" style="background:{btn_color}; color:#1c1c1c; border:1px solid #2c3e50; border-radius:8px; padding:6px 12px; font-size:12px; font-weight:bold; cursor:pointer;">▶️ Volver a escuchar</button>
+                        <button onclick="window.speakResponse(true)" style="background:{btn_color if 'btn_color' in locals() else '#ec4899'}; color:#1c1c1c; border:1px solid #2c3e50; border-radius:8px; padding:6px 12px; font-size:12px; font-weight:bold; cursor:pointer;">▶️ Volver a escuchar</button>
                     </div>
                     <script>
                         window.speakResponse = function(forced = false) {{
@@ -332,4 +339,12 @@ if prompt:
                 chat_actual.append({"role": "assistant", "content": respuesta_texto})
                     
             except Exception as e:
-                st.error(f"¡Un lapsus! Se nos cayó la tiza del servidor: {e}")
+                if "429" in str(e) or "quota" in str(e).lower() or "limit" in str(e).lower():
+                    segundos_espera = "10"
+                    match = re.search(r'retry in ([\d\.]+)', str(e))
+                    if match:
+                        segundos_espera = str(int(float(match.group(1))) + 1)
+                    
+                    st.warning(f"⏳ **¡Uy, un segundo!** Como este es un chatbot educativo gratuito, tenemos que tomar turnos para usar la pizarra. Por favor, **espera {segundos_espera} segundos** y vuelve a enviar tu pregunta. ¡Muchas gracias por tu paciencia! 🎒")
+                else:
+                    st.error("🎒 **¡Un pequeño tropiezo en el salón de clases!** No pudimos procesar tu mensaje. Por favor, espera unos segundos e inténtalo de nuevo.")
