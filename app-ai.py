@@ -279,12 +279,18 @@ if prompt:
                 audio_response = client.models.generate_content(
                     model='gemini-2.5-flash',
                     contents=f"Lee en voz alta de forma natural, imitando el tono de un profesor de universidad hablando con sus alumnos, sin leer asteriscos ni símbolos: {respuesta_texto}",
-                    config={"response_mime_type": "audio/mp3"}
+                    config=types.GenerateContentConfig(response_modalities=["AUDIO"])
                 )
                 
-                if hasattr(audio_response, 'inline_data') or (audio_response.text and "audio" in str(audio_response)):
-                    st.audio(audio_response.text, format="audio/mp3")
-                    st.session_state.messages.append({"role": "assistant", "content": respuesta_texto, "audio": audio_response.text})
+                audio_bytes_out = None
+                for part in audio_response.candidates[0].content.parts:
+                    if part.inline_data and part.inline_data.mime_type.startswith("audio/"):
+                        audio_bytes_out = part.inline_data.data
+                        break
+                
+                if audio_bytes_out:
+                    st.audio(audio_bytes_out, format="audio/mp3")
+                    st.session_state.messages.append({"role": "assistant", "content": respuesta_texto, "audio": audio_bytes_out})
                 else:
                     st.session_state.messages.append({"role": "assistant", "content": respuesta_texto})
                     
