@@ -3,7 +3,6 @@ from google import genai
 from google.genai import types
 from PIL import Image
 from streamlit_mic_recorder import mic_recorder
-from gtts import gTTS
 import io
 import random
 import re
@@ -306,21 +305,33 @@ if prompt:
                     st.markdown("### 🦥 ¡ALERTA DE VAGO DETECTADA!")
                     st.link_button("👉 CLICK AQUÍ PARA IR AL RINCÓN DEL VAGO", "https://www.rincondelvago.com/")
                 
-                audio_data = None
+                audio_bytes_out = None
                 if modo_explicacion == "👶 Modo Niño (Para que tu sobrinito entienda)":
                     texto_limpio = re.sub(r'[*_#`~]', '', respuesta_texto)
                     texto_limpio = re.sub(r'[^\w\s.,?!áéíóúÁÉÍÓÚñÑ]', '', texto_limpio)
-                    texto_limpio = " ".join(texto_limpio.split()[:40])
                     
-                    if texto_limpio.strip():
-                        tts = gTTS(text=texto_limpio, lang='es', tld='com')
-                        fp = io.BytesIO()
-                        tts.write_to_fp(fp)
-                        fp.seek(0)
-                        audio_data = fp.read()
-                        st.audio(audio_data, format="audio/mp3")
+                    audio_response = client.models.generate_content(
+                        model='gemini-2.5-flash',
+                        contents=f"Lee el siguiente texto completo con una voz muy amable, dulce, humana y pausada para niños pequeños, sin prisa: {texto_limpio}",
+                        config=types.GenerateContentConfig(
+                            response_modalities=["AUDIO"],
+                            speech_config=types.SpeechConfig(
+                                voice_config=types.VoiceConfig(
+                                    prebuilt_voice_config=types.PrebuiltVoiceConfig(voice_name="Puck")
+                                )
+                            )
+                        )
+                    )
+                    
+                    for part in audio_response.candidates[0].content.parts:
+                        if part.inline_data and part.inline_data.mime_type.startswith("audio/"):
+                            audio_bytes_out = part.inline_data.data
+                            break
+                    
+                    if audio_bytes_out:
+                        st.audio(audio_bytes_out, format="audio/mp3")
                 
-                chat_actual.append({"role": "assistant", "content": respuesta_texto, "audio": audio_data})
+                chat_actual.append({"role": "assistant", "content": respuesta_texto, "audio": audio_bytes_out})
                     
             except Exception as e:
                 st.error(f"¡Un lapsus! Se nos cayó la tiza del servidor: {e}")
