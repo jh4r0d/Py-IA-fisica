@@ -15,7 +15,7 @@ st.set_page_config(
 if "prev_modo" not in st.session_state:
     st.session_state.prev_modo = "🎓 Modo Universitario (Prepárate para la PC)"
 if "pastel_colors" not in st.session_state:
-    st.session_state.pastel_colors = ["#ffb7b2", "#ffdac1", "#e2f0cb", "#b5ead7", "#c7ceea"]
+    st.session_state.pastel_colors = ["#FFF5F5", "#FFE3E3", "#E8F5E9"]
 
 st.sidebar.header("⚙️ Configuración de la Clase")
 modo_explicacion = st.sidebar.selectbox(
@@ -27,46 +27,87 @@ modo_explicacion = st.sidebar.selectbox(
 
 if modo_explicacion != st.session_state.prev_modo:
     if modo_explicacion == "👶 Modo Niño (Para que tu sobrinito entienda)":
-        colores_disponibles = ["#ffb7b2", "#ffdac1", "#e2f0cb", "#b5ead7", "#c7ceea", "#ff9aa2", "#f8ecc2"]
-        st.session_state.pastel_colors = random.sample(colores_disponibles, 3)
+        fondos_claros = ["#FFF0F5", "#F0F8FF", "#F5FFFA", "#FFF8DC", "#FAF0E6"]
+        detalles_fuertes = ["#FFB6C1", "#ADD8E6", "#98FB98", "#F0E68C", "#E6E6FA"]
+        botones = ["#FF69B4", "#87CEEB", "#4169E1", "#32CD32", "#BA55D3"]
+        st.session_state.pastel_colors = [
+            random.choice(fondos_claros),
+            random.choice(detalles_fuertes),
+            random.choice(botones)
+        ]
     st.session_state.prev_modo = modo_explicacion
 
 if modo_explicacion == "👶 Modo Niño (Para que tu sobrinito entienda)":
-    bg_color = st.session_state.pastel_colors[0]
-    title_color = st.session_state.pastel_colors[1]
+    bg_chat = st.session_state.pastel_colors[0]
+    bg_entorno = st.session_state.pastel_colors[1]
     btn_color = st.session_state.pastel_colors[2]
+    
     st.markdown(f"""
         <style>
-        .stApp {{ background-color: {bg_color} !important; }}
-        h1 {{ color: {title_color} !important; text-align: center; font-family: 'Comic Sans MS', sans-serif; font-weight: bold; text-shadow: 1px 1px 2px #000; }}
-        .stButton>button {{ background-color: {btn_color} !important; color: #333333 !important; border-radius: 20px; font-weight: bold; border: 2px solid #333; }}
-        p, span, label {{ color: #1c1c1c !important; font-family: 'Comic Sans MS', sans-serif; }}
+        .stApp, [data-testid="stSidebar"], [data-testid="stHeader"] {{
+            background-color: {bg_entorno} !important;
+        }}
+        [data-testid="stVerticalBlock"] > div {{
+            background-color: transparent !important;
+        }}
+        .stChatMessage, [data-testid="stChatMessage"] {{
+            background-color: {bg_chat} !important;
+            border-radius: 15px !important;
+            border: 1px solid rgba(0,0,0,0.05) !important;
+            padding: 10px !important;
+            box-shadow: 0px 2px 5px rgba(0,0,0,0.02) !important;
+        }}
+        .stChatInputContainer, [data-testid="stChatInput"] textarea {{
+            background-color: {bg_chat} !important;
+            color: #1c1c1c !important;
+            border: 2px solid {btn_color} !important;
+            border-radius: 15px !important;
+        }}
+        h1 {{ 
+            color: #2c3e50 !important; 
+            text-align: center; 
+            font-family: 'Comic Sans MS', sans-serif; 
+            font-weight: bold; 
+        }}
+        .stButton>button {{ 
+            background-color: {btn_color} !important; 
+            color: white !important; 
+            border-radius: 20px; 
+            font-weight: bold; 
+            border: none !important;
+        }}
+        p, span, label, li {{ 
+            color: #2c3e50 !important; 
+            font-family: 'Comic Sans MS', sans-serif; 
+        }}
+        </style>
+    """, unsafe_allow_html=True)
+    
+    st.markdown("""
+        <div style="position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; pointer-events: none; z-index: 0; overflow: hidden;">
+            <div class="float-item" style="position: absolute; top: 15%; left: 5%; animation: fade 6s infinite ease-in-out;"><img src="https://cdn-icons-png.flaticon.com/512/3020/3020473.png" width="65"></div>
+            <div class="float-item" style="position: absolute; bottom: 20%; left: 4%; animation: fade 8s infinite ease-in-out 2s;"><img src="https://cdn-icons-png.flaticon.com/512/2510/2510001.png" width="65"></div>
+            <div class="float-item" style="position: absolute; top: 25%; right: 5%; animation: fade 7s infinite ease-in-out 1s;"><img src="https://cdn-icons-png.flaticon.com/512/2940/2940176.png" width="65"></div>
+            <div class="float-item" style="position: absolute; bottom: 15%; right: 6%; animation: fade 9s infinite ease-in-out 3s;"><img src="https://cdn-icons-png.flaticon.com/512/1048/1048943.png" width="65"></div>
+        </div>
+        <style>
+        @keyframes fade {
+            0% { opacity: 0; transform: translateY(0px) scale(0.9); }
+            50% { opacity: 0.8; transform: translateY(-10px) scale(1); }
+            100% { opacity: 0; transform: translateY(0px) scale(0.9); }
+        }
         </style>
     """, unsafe_allow_html=True)
 else:
     st.markdown("""
         <style>
-        .stApp { background-color: #0f172a !important; }
+        .stApp, [data-testid="stSidebar"], [data-testid="stHeader"] { background-color: #0f172a !important; }
         h1 { color: #38bdf8 !important; text-align: center; font-family: 'Arial', sans-serif; font-weight: bold; }
         .stButton>button { background-color: #ec4899 !important; color: white !important; border-radius: 20px; }
         </style>
     """, unsafe_allow_html=True)
 
 st.title("👨‍🏫 AIrtin: Tu Profesor de Física 1")
-
-if modo_explicacion == "👶 Modo Niño (Para que tu sobrinito entienda)":
-    iconos_fisica = [
-        "https://cdn-icons-png.flaticon.com/512/3020/3020473.png",
-        "https://cdn-icons-png.flaticon.com/512/2510/2510001.png",
-        "https://cdn-icons-png.flaticon.com/512/2940/2940176.png",
-        "https://cdn-icons-png.flaticon.com/512/1048/1048943.png"
-    ]
-    col1, col2, col3, col4 = st.columns(4)
-    with col1: st.image(iconos_fisica[0], width=70)
-    with col2: st.image(iconos_fisica[1], width=70)
-    with col3: st.image(iconos_fisica[2], width=70)
-    with col4: st.image(iconos_fisica[3], width=70)
-
 st.write("¡A ver, entren, entren! Saquen una hoja... mentira. Pregúntame lo que quieras de física, teoría o problemas. Puedes hablarme, escribirme o subir la foto de ese ejercicio que no te sale.")
 
 API_KEY = "AQ.Ab8RN6JvCsVZXOqrtj1qfrR1o0z0GYW5gzfR5iArhc6tihqO6Q"
