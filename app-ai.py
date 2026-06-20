@@ -5,6 +5,8 @@ from PIL import Image
 from streamlit_mic_recorder import mic_recorder
 import io
 import random
+import urllib.parse
+import re
 
 st.set_page_config(
     page_title="AIrtin - Tu Profe de Física 1",
@@ -306,11 +308,15 @@ if prompt:
                 
                 audio_html = ""
                 if modo_explicacion == "👶 Modo Niño (Para que tu sobrinito entienda)":
-                    texto_limpio = respuesta_texto.replace('"', '&quot;').replace('\n', ' ')
+                    texto_limpio = re.sub(r'[*_#`~]', '', respuesta_texto)
+                    texto_limpio = re.sub(r'[^\w\s.,?!áéíóúÁÉÍÓÚñÑ]', '', texto_limpio)
+                    texto_limpio = " ".join(texto_limpio.split()[:35])
+                    texto_codificado = urllib.parse.quote(texto_limpio)
+                    
                     audio_html = f"""
-                    <div style="margin-top:10px;">
-                        <p style="font-size:13px; color:#555;">🔊 <i>Leyendo para ti:</i></p>
-                        <audio autoplay controls src="https://translate.google.com/translate_tts?ie=UTF-8&tl=es&client=tw-ob&q={texto_limpio[:200]}"></audio>
+                    <div style="margin-top:15px; background: rgba(0,0,0,0.03); padding: 10px; border-radius: 10px;">
+                        <p style="font-size:14px; color:#2c3e50; font-family: 'Comic Sans MS', sans-serif; margin-bottom:5px;">🔊 <b>¡Escucha la respuesta aquí abajo!</b></p>
+                        <audio controls src="https://translate.google.com/translate_tts?ie=UTF-8&tl=es&client=tw-ob&q={texto_codificado}"></audio>
                     </div>
                     """
                     st.markdown(audio_html, unsafe_allow_html=True)
