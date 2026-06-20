@@ -304,9 +304,9 @@ if prompt:
                     st.link_button("👉 CLICK AQUÍ PARA IR AL RINCÓN DEL VAGO", "https://www.rincondelvago.com/")
                 
                 if modo_explicacion == "👶 Modo Niño (Para que tu sobrinito entienda)":
-                    texto_limpio = re.sub(r'[*_#`~]', '', respuesta_texto)
-                    texto_limpio = re.sub(r'[^\w\s.,?!áéíóúÁÉÍÓÚñÑ]', '', texto_limpio)
-                    texto_limpio = texto_limpio.replace("'", "\\'").replace('"', '\\"')
+                    texto_limpio = re.sub(r'[*_#`~]', ' ', respuesta_texto)
+                    texto_limpio = re.sub(r'[^\w\s.,?!áéíóúÁÉÍÓÚñÑ]', ' ', texto_limpio)
+                    texto_limpio = re.sub(r'\s+', ' ', texto_limpio).strip()
                     
                     js_audio = f"""
                     <div style="margin-top:15px; background: rgba(0,0,0,0.03); padding: 12px; border-radius: 10px; border-left: 4px solid {btn_color};">
@@ -316,13 +316,13 @@ if prompt:
                     <script>
                         window.speakResponse = function() {{
                             window.speechSynthesis.cancel();
-                            var msg = new SpeechSynthesisUtterance("{texto_limpio}");
+                            var msg = new SpeechSynthesisUtterance(`{texto_limpio}`);
                             msg.lang = 'es-ES';
                             msg.rate = 0.95;
                             msg.pitch = 1.0;
                             window.speechSynthesis.speak(msg);
                         }};
-                        setTimeout(window.speakResponse, 500);
+                        setTimeout(window.speakResponse, 400);
                     </script>
                     """
                     st.markdown(js_audio, unsafe_allow_html=True)
