@@ -1,5 +1,6 @@
 import streamlit as st
 from google import genai
+from google.genai import types
 from PIL import Image
 from streamlit_mic_recorder import mic_recorder
 import io
@@ -89,7 +90,12 @@ if prompt:
     contenido_solicitud = []
     
     if audio_bytes:
-        contenido_solicitud.append({"mime_type": "audio/wav", "data": audio_bytes})
+        part_audio = types.Part.from_bytes(
+            data=audio_bytes,
+            mime_type="audio/wav"
+        )
+        contenido_solicitud.append(part_audio)
+        contenido_solicitud.append("Escucha este audio atentamente y responde siguiendo tus instrucciones de profesor.")
     else:
         contenido_solicitud.append(prompt)
         
