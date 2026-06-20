@@ -218,8 +218,6 @@ imagen_subida = st.sidebar.file_uploader("Sube la foto del problema:", type=["pn
 for message in chat_actual:
     with st.chat_message(message["role"]):
         st.markdown(message["content"])
-        if "audio" in message:
-            st.audio(message["audio"], format="audio/mp3")
 
 st.write("---")
 st.write("🎙️ **¿Te da flojera escribir? Habla por el micrófono:**")
@@ -305,33 +303,31 @@ if prompt:
                     st.markdown("### 🦥 ¡ALERTA DE VAGO DETECTADA!")
                     st.link_button("👉 CLICK AQUÍ PARA IR AL RINCÓN DEL VAGO", "https://www.rincondelvago.com/")
                 
-                audio_bytes_out = None
                 if modo_explicacion == "👶 Modo Niño (Para que tu sobrinito entienda)":
                     texto_limpio = re.sub(r'[*_#`~]', '', respuesta_texto)
                     texto_limpio = re.sub(r'[^\w\s.,?!áéíóúÁÉÍÓÚñÑ]', '', texto_limpio)
+                    texto_limpio = texto_limpio.replace("'", "\\'").replace('"', '\\"')
                     
-                    audio_response = client.models.generate_content(
-                        model='gemini-2.5-flash',
-                        contents=f"Lee el siguiente texto completo con una voz muy amable, dulce, humana y pausada para niños pequeños, sin prisa: {texto_limpio}",
-                        config=types.GenerateContentConfig(
-                            response_modalities=["AUDIO"],
-                            speech_config=types.SpeechConfig(
-                                voice_config=types.VoiceConfig(
-                                    prebuilt_voice_config=types.PrebuiltVoiceConfig(voice_name="Puck")
-                                )
-                            )
-                        )
-                    )
-                    
-                    for part in audio_response.candidates[0].content.parts:
-                        if part.inline_data and part.inline_data.mime_type.startswith("audio/"):
-                            audio_bytes_out = part.inline_data.data
-                            break
-                    
-                    if audio_bytes_out:
-                        st.audio(audio_bytes_out, format="audio/mp3")
+                    js_audio = f"""
+                    <div style="margin-top:15px; background: rgba(0,0,0,0.03); padding: 12px; border-radius: 10px; border-left: 4px solid {btn_color};">
+                        <p style="font-size:14px; color:#2c3e50; font-family: 'Comic Sans MS', sans-serif; margin:0 0 8px 0;">🔊 <b>¡AIrtin te está leyendo la respuesta en voz alta!</b></p>
+                        <button onclick="window.speakResponse()" style="background:{btn_color}; color:#1c1c1c; border:1px solid #2c3e50; border-radius:8px; padding:4px 10px; font-size:12px; font-weight:bold; cursor:pointer;">▶️ Volver a escuchar</button>
+                    </div>
+                    <script>
+                        window.speakResponse = function() {{
+                            window.speechSynthesis.cancel();
+                            var msg = new SpeechSynthesisUtterance("{texto_limpio}");
+                            msg.lang = 'es-ES';
+                            msg.rate = 0.95;
+                            msg.pitch = 1.0;
+                            window.speechSynthesis.speak(msg);
+                        }};
+                        setTimeout(window.speakResponse, 500);
+                    </script>
+                    """
+                    st.markdown(js_audio, unsafe_allow_html=True)
                 
-                chat_actual.append({"role": "assistant", "content": respuesta_texto, "audio": audio_bytes_out})
+                chat_actual.append({"role": "assistant", "content": respuesta_texto})
                     
             except Exception as e:
                 st.error(f"¡Un lapsus! Se nos cayó la tiza del servidor: {e}")
