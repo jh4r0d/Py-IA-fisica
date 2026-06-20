@@ -15,7 +15,7 @@ st.set_page_config(
 if "prev_modo" not in st.session_state:
     st.session_state.prev_modo = "🎓 Modo Universitario (Prepárate para la PC)"
 if "pastel_colors" not in st.session_state:
-    st.session_state.pastel_colors = ["#FFF5F5", "#FFE3E3", "#E8F5E9"]
+    st.session_state.pastel_colors = ["#FDFDFD", "#FFE3E3", "#E8F5E9"]
 
 st.sidebar.header("⚙️ Configuración de la Clase")
 modo_explicacion = st.sidebar.selectbox(
@@ -27,14 +27,9 @@ modo_explicacion = st.sidebar.selectbox(
 
 if modo_explicacion != st.session_state.prev_modo:
     if modo_explicacion == "👶 Modo Niño (Para que tu sobrinito entienda)":
-        fondos_claros = ["#FFF0F5", "#F0F8FF", "#F5FFFA", "#FFF8DC", "#FAF0E6"]
-        detalles_fuertes = ["#FFB6C1", "#ADD8E6", "#98FB98", "#F0E68C", "#E6E6FA"]
-        botones = ["#FF69B4", "#87CEEB", "#4169E1", "#32CD32", "#BA55D3"]
-        st.session_state.pastel_colors = [
-            random.choice(fondos_claros),
-            random.choice(detalles_fuertes),
-            random.choice(botones)
-        ]
+        lista_colores = ["#FFB6C1", "#ADD8E6", "#98FB98", "#F0E68C", "#E6E6FA", "#FFD700", "#FFA07A", "#20B2AA", "#87CEFA", "#FF69B4"]
+        elegidos = random.sample(lista_colores, 2)
+        st.session_state.pastel_colors = ["#FDFDFD", elegidos[0], elegidos[1]]
     st.session_state.prev_modo = modo_explicacion
 
 if modo_explicacion == "👶 Modo Niño (Para que tu sobrinito entienda)":
@@ -44,23 +39,27 @@ if modo_explicacion == "👶 Modo Niño (Para que tu sobrinito entienda)":
     
     st.markdown(f"""
         <style>
-        .stApp, [data-testid="stSidebar"], [data-testid="stHeader"] {{
+        .stApp, [data-testid="stHeader"], [data-testid="stSidebar"], [data-testid="stSidebarCollapsedControl"] {{
             background-color: {bg_entorno} !important;
         }}
-        [data-testid="stVerticalBlock"] > div {{
-            background-color: transparent !important;
+        [data-testid="stBottomBlockContainer"] {{
+            background-color: {bg_entorno} !important;
         }}
         .stChatMessage, [data-testid="stChatMessage"] {{
             background-color: {bg_chat} !important;
             border-radius: 15px !important;
-            border: 1px solid rgba(0,0,0,0.05) !important;
-            padding: 10px !important;
-            box-shadow: 0px 2px 5px rgba(0,0,0,0.02) !important;
+            border: 2px solid {btn_color} !important;
+            padding: 15px !important;
+            box-shadow: 0px 4px 10px rgba(0,0,0,0.05) !important;
         }}
-        .stChatInputContainer, [data-testid="stChatInput"] textarea {{
+        [data-testid="stChatInputContainer"] {{
+            background-color: {bg_entorno} !important;
+            border: none !important;
+        }}
+        .stChatInputContainer textarea, [data-testid="stChatInput"] {{
             background-color: {bg_chat} !important;
             color: #1c1c1c !important;
-            border: 2px solid {btn_color} !important;
+            border: 3px solid {btn_color} !important;
             border-radius: 15px !important;
         }}
         h1 {{ 
@@ -74,34 +73,45 @@ if modo_explicacion == "👶 Modo Niño (Para que tu sobrinito entienda)":
             color: white !important; 
             border-radius: 20px; 
             font-weight: bold; 
-            border: none !important;
+            border: 2px solid #2c3e50 !important;
         }}
-        p, span, label, li {{ 
+        p, span, label, li, .stMarkdown {{ 
             color: #2c3e50 !important; 
             font-family: 'Comic Sans MS', sans-serif; 
+            font-weight: bold !important;
         }}
         </style>
     """, unsafe_allow_html=True)
     
     st.markdown("""
         <div style="position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; pointer-events: none; z-index: 0; overflow: hidden;">
-            <div class="float-item" style="position: absolute; top: 15%; left: 5%; animation: fade 6s infinite ease-in-out;"><img src="https://cdn-icons-png.flaticon.com/512/3020/3020473.png" width="65"></div>
-            <div class="float-item" style="position: absolute; bottom: 20%; left: 4%; animation: fade 8s infinite ease-in-out 2s;"><img src="https://cdn-icons-png.flaticon.com/512/2510/2510001.png" width="65"></div>
-            <div class="float-item" style="position: absolute; top: 25%; right: 5%; animation: fade 7s infinite ease-in-out 1s;"><img src="https://cdn-icons-png.flaticon.com/512/2940/2940176.png" width="65"></div>
-            <div class="float-item" style="position: absolute; bottom: 15%; right: 6%; animation: fade 9s infinite ease-in-out 3s;"><img src="https://cdn-icons-png.flaticon.com/512/1048/1048943.png" width="65"></div>
+            <div class="float-item-left" style="position: absolute; top: 15%; left: 3%; animation: floatLeft 12s infinite ease-in-out;"><img src="https://cdn-icons-png.flaticon.com/512/3020/3020473.png" width="130" style="opacity: 0.25;"></div>
+            <div class="float-item-left" style="position: absolute; bottom: 25%; left: 2%; animation: floatLeft 16s infinite ease-in-out 3s;"><img src="https://cdn-icons-png.flaticon.com/512/2510/2510001.png" width="120" style="opacity: 0.25;"></div>
+            <div class="float-item-right" style="position: absolute; top: 20%; right: 3%; animation: floatRight 14s infinite ease-in-out 1s;"><img src="https://cdn-icons-png.flaticon.com/512/2940/2940176.png" width="125" style="opacity: 0.25;"></div>
+            <div class="float-item-right" style="position: absolute; bottom: 20%; right: 2%; animation: floatRight 18s infinite ease-in-out 4s;"><img src="https://cdn-icons-png.flaticon.com/512/1048/1048943.png" width="115" style="opacity: 0.25;"></div>
         </div>
         <style>
-        @keyframes fade {
-            0% { opacity: 0; transform: translateY(0px) scale(0.9); }
-            50% { opacity: 0.8; transform: translateY(-10px) scale(1); }
-            100% { opacity: 0; transform: translateY(0px) scale(0.9); }
+        @keyframes floatLeft {
+            0% { opacity: 0; transform: translateY(0px) translateX(0px) rotate(0deg); }
+            15% { opacity: 0.35; }
+            50% { transform: translateY(-40px) translateX(20px) rotate(10deg); opacity: 0.45; }
+            85% { opacity: 0.35; }
+            100% { opacity: 0; transform: translateY(0px) translateX(0px) rotate(0deg); }
+        }
+        @keyframes floatRight {
+            0% { opacity: 0; transform: translateY(0px) translateX(0px) rotate(0deg); }
+            15% { opacity: 0.35; }
+            50% { transform: translateY(-50px) translateX(-20px) rotate(-10deg); opacity: 0.45; }
+            85% { opacity: 0.35; }
+            100% { opacity: 0; transform: translateY(0px) translateX(0px) rotate(0deg); }
         }
         </style>
     """, unsafe_allow_html=True)
 else:
     st.markdown("""
         <style>
-        .stApp, [data-testid="stSidebar"], [data-testid="stHeader"] { background-color: #0f172a !important; }
+        .stApp, [data-testid="stSidebar"], [data-testid="stHeader"], [data-testid="stBottomBlockContainer"] { background-color: #0f172a !important; }
+        [data-testid="stChatInputContainer"] { background-color: #0f172a !important; }
         h1 { color: #38bdf8 !important; text-align: center; font-family: 'Arial', sans-serif; font-weight: bold; }
         .stButton>button { background-color: #ec4899 !important; color: white !important; border-radius: 20px; }
         </style>
