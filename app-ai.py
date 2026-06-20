@@ -118,79 +118,6 @@ if modo_explicacion == "👶 Modo Niño (Para que tu sobrinito entienda)":
         }}
         </style>
     """, unsafe_allow_html=True)
-    
-    st.markdown("""
-        <div style="position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; pointer-events: none; z-index: 0; overflow: hidden;">
-            <div style="position: absolute; top: 10%; left: 2%; animation: moveOne 14s infinite linear;"><img src="https://cdn-icons-png.flaticon.com/512/3020/3020473.png" width="90" style="opacity: 0.25;"></div>
-            <div style="position: absolute; top: 45%; left: 3%; animation: moveTwo 18s infinite linear;"><img src="https://cdn-icons-png.flaticon.com/512/2510/2510001.png" width="100" style="opacity: 0.25;"></div>
-            <div style="position: absolute; bottom: 20%; left: 1%; animation: moveThree 22s infinite linear;"><img src="https://cdn-icons-png.flaticon.com/512/3655/3655581.png" width="85" style="opacity: 0.25;"></div>
-            <div style="position: absolute; top: 15%; right: 2%; animation: moveFour 16s infinite linear;"><img src="https://cdn-icons-png.flaticon.com/512/2940/2940176.png" width="95" style="opacity: 0.25;"></div>
-            <div style="position: absolute; top: 50%; right: 3%; animation: moveFive 20s infinite linear;"><img src="https://cdn-icons-png.flaticon.com/512/1048/1048943.png" width="90" style="opacity: 0.25;"></div>
-            <div style="position: absolute; bottom: 25%; right: 1%; animation: moveSix 24s infinite linear;"><img src="https://cdn-icons-png.flaticon.com/512/911/911174.png" width="80" style="opacity: 0.25;"></div>
-        </div>
-        <style>
-        @keyframes moveOne {
-            0% { opacity: 0; transform: translate(0px, 0px) scale(0.8); }
-            10% { opacity: 0.4; }
-            45% { transform: translate(40px, -40px) scale(1); opacity: 0.4; }
-            50% { opacity: 0; transform: translate(40px, -40px) scale(0.8); }
-            55% { transform: translate(10px, 150px) scale(0.8); opacity: 0; }
-            60% { opacity: 0.4; }
-            90% { transform: translate(-20px, 80px) scale(1); opacity: 0.4; }
-            100% { opacity: 0; transform: translate(0px, 0px) scale(0.8); }
-        }
-        @keyframes moveTwo {
-            0% { opacity: 0; transform: translate(0px, 0px); }
-            15% { opacity: 0.4; }
-            40% { transform: translate(30px, 60px); opacity: 0.4; }
-            45% { opacity: 0; transform: translate(30px, 60px); }
-            50% { transform: translate(-10px, -100px); opacity: 0; }
-            55% { opacity: 0.4; }
-            95% { transform: translate(20px, -40px); opacity: 0.4; }
-            100% { opacity: 0; transform: translate(0px, 0px); }
-        }
-        @keyframes moveThree {
-            0% { opacity: 0; transform: translate(0px, 0px); }
-            10% { opacity: 0.4; }
-            50% { transform: translate(20px, -80px); opacity: 0.4; }
-            55% { opacity: 0; }
-            60% { transform: translate(35px, -180px); opacity: 0; }
-            65% { opacity: 0.4; }
-            95% { transform: translate(0px, -120px); opacity: 0.4; }
-            100% { opacity: 0; }
-        }
-        @keyframes moveFour {
-            0% { opacity: 0; transform: translate(0px, 0px); }
-            12% { opacity: 0.4; }
-            40% { transform: translate(-30px, -50px); opacity: 0.4; }
-            45% { opacity: 0; transform: translate(-30px, -50px); }
-            50% { transform: translate(20px, 120px); opacity: 0; }
-            55% { opacity: 0.4; }
-            92% { transform: translate(-15px, 60px); opacity: 0.4; }
-            100% { opacity: 0; transform: translate(0px, 0px); }
-        }
-        @keyframes moveFive {
-            0% { opacity: 0; transform: translate(0px, 0px); }
-            8% { opacity: 0.4; }
-            48% { transform: translate(-25px, 70px); opacity: 0.4; }
-            53% { opacity: 0; transform: translate(-25px, 70px); }
-            58% { transform: translate(15px, -90px); opacity: 0; }
-            63% { opacity: 0.4; }
-            95% { transform: translate(-10px, -45px); opacity: 0.4; }
-            100% { opacity: 0; transform: translate(0px, 0px); }
-        }
-        @keyframes moveSix {
-            0% { opacity: 0; transform: translate(0px, 0px); }
-            15% { opacity: 0.4; }
-            45% { transform: translate(-20px, -70px); opacity: 0.4; }
-            50% { opacity: 0; }
-            55% { transform: translate(-30px, -160px); opacity: 0; }
-            60% { opacity: 0.4; }
-            90% { transform: translate(15px, -110px); opacity: 0.4; }
-            100% { opacity: 0; }
-        }
-        </style>
-    """, unsafe_allow_html=True)
 else:
     st.markdown("""
         <style>
@@ -208,7 +135,6 @@ else:
 st.title("👨‍🏫 AIrtin: Tu Profesor de Física 1")
 st.write("¡A ver, entren, entren! Saquen una hoja... mentira. Pregúntame lo que quieras de física, teoría o problemas. Puedes hablarme, escribirme o subir la foto de ese ejercicio que no te sale.")
 
-# --- POOL DE CLAVES API INCORPORADO ---
 POOL_KEYS = [
     "AQ.Ab8RN6JvCsVZXOqrtj1qfrR1o0z0GYW5gzfR5iArhc6tihqO6Q",
     "AIzaSyB7tGeuVKL_1Wz85UZdqCeL60Eh8YHD_6w",
@@ -259,7 +185,7 @@ if prompt:
     
     if modo_explicacion == "👶 Modo Niño (Para que tu sobrinito entienda)":
         system_instruction = perfil_instrucciones + """
-        Eres AIrtin, pero en esta ocasión te estás communicating con niños pequeños. Modifica tu comportamiento por completo: 
+        Eres AIrtin, pero en esta ocasión te estás comunicando con niños pequeños. Modifica tu comportamiento por completo: 
         sé extremadamente educado, gentil, cariñoso y paciente. No uses bromas de jalar exámenes, prácticas calificadas, amanecidas o copiar. 
         Explica los conceptos de física con mucha ternura, usando analogías muy fáciles basadas en superhéroes, caramelos, magia, cuentos o animales. 
         Mantén un tono de maestro de primaria muy alegre, motivador, que los felicite por su curiosidad y use muchos emojis bonitos.
@@ -293,10 +219,6 @@ if prompt:
         imagen_pil = Image.open(imagen_subida)
         contenido_solicitud.append(imagen_pil)
 
-    # Inicializamos variables para evitar que fallen en silencio
-    texto_a_reproducir = ""
-    ejecutar_audio = False
-
     with st.chat_message("assistant"):
         with st.spinner("Buscando las tizas y borrando la pizarra... 👨‍🏫"):
             try:
@@ -313,55 +235,15 @@ if prompt:
                     st.markdown("### 🦥 ¡ALERTA DE VAGO DETECTADA!")
                     st.link_button("👉 CLICK AQUÍ PARA IR AL RINCÓN DEL VAGO", "https://www.rincondelvago.com/")
                 
-                # Si estamos en modo niños, guardamos el texto para el locutor
-                if modo_explicacion == "👶 Modo Niño (Para que tu sobrinito entienda)":
-                    texto_a_reproducir = respuesta_texto
-                    ejecutar_audio = True
-                
                 chat_actual.append({"role": "assistant", "content": respuesta_texto})
                     
             except Exception as e:
-                # Si ocurre un error, preparamos el mensaje amigable de texto
                 if "429" in str(e) or "quota" in str(e).lower() or "limit" in str(e).lower():
                     segundos_espera = "10"
                     match = re.search(r'retry in ([\d\.]+)', str(e))
                     if match:
                         segundos_espera = str(int(float(match.group(1))) + 1)
                     
-                    mensaje_error = f"¡Uy, un segundo! Como este es un chatbot educativo gratuito, tenemos que tomar turnos para usar la pizarra. Por favor, espera {segundos_espera} segundos y vuelve a enviar tu pregunta. ¡Muchas gracias por tu paciencia!"
-                    st.warning(f"⏳ **{mensaje_error}** 🎒")
+                    st.warning(f"⏳ **¡Uy, un segundo!** Como este es un chatbot educativo gratuito, tenemos que tomar turnos para usar la pizarra. Por favor, **espera {segundos_espera} segundos** y vuelve a enviar tu pregunta. ¡Muchas gracias por tu paciencia! 🎒")
                 else:
-                    mensaje_error = "¡Un pequeño tropiezo en el salón de clases! No pudimos procesar tu mensaje. Por favor, espera unos segundos e inténtalo de nuevo."
-                    st.error(f"🎒 **{mensaje_error}**")
-                
-                # ¡Aquí está el truco! Forzamos a que el audio hable el error si estamos en Modo Niño
-                if modo_explicacion == "👶 Modo Niño (Para que tu sobrinito entienda)":
-                    texto_a_reproducir = mensaje_error
-                    ejecutar_audio = True
-
-        # --- SECCIÓN DE GENERACIÓN DE AUDIO UNIFICADA ---
-        if ejecutar_audio and texto_a_reproducir:
-            texto_limpio = re.sub(r'[*_#`~]', ' ', texto_a_reproducir)
-            texto_limpio = re.sub(r'[^\w\s.,?!áéíóúÁÉÍÓÚñÑ]', ' ', texto_limpio)
-            texto_limpio = re.sub(r'\s+', ' ', texto_limpio).strip()
-            
-            js_audio = f"""
-            <div style="margin-top:15px; background: rgba(0,0,0,0.03); padding: 12px; border-radius: 10px; border-left: 4px solid {btn_color if 'btn_color' in locals() else '#ec4899'};">
-                <p style="font-size:14px; color:#2c3e50; font-family: 'Comic Sans MS', sans-serif; margin:0 0 8px 0;">🔊 <b>¡AIrtin te está leyendo la respuesta en voz alta!</b></p>
-                <button onclick="window.speakResponse(true)" style="background:{btn_color if 'btn_color' in locals() else '#ec4899'}; color:#1c1c1c; border:1px solid #2c3e50; border-radius:8px; padding:6px 12px; font-size:12px; font-weight:bold; cursor:pointer;">▶️ Volver a escuchar</button>
-            </div>
-            <script>
-                window.speakResponse = function(forced = false) {{
-                    if ('speechSynthesis' in window) {{
-                        window.speechSynthesis.cancel();
-                        var msg = new SpeechSynthesisUtterance(`{texto_limpio}`);
-                        msg.lang = 'es-419';
-                        msg.rate = 0.95;
-                        msg.pitch = 1.0;
-                        window.speechSynthesis.speak(msg);
-                    }}
-                }};
-                setTimeout(function() {{ window.speakResponse(false); }}, 400);
-            </script>
-            """
-            st.markdown(js_audio, unsafe_allow_html=True)
+                    st.error("🎒 **¡Un pequeño tropiezo en el salón de clases!** No pudimos procesar tu mensaje. Por favor, espera unos segundos e inténtalo de nuevo.")
