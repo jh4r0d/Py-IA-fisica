@@ -1,103 +1,125 @@
 import streamlit as st
 from google import genai
 from PIL import Image
+from streamlit_mic_recorder import mic_recorder
+import io
 
-# Configuración de la página
 st.set_page_config(
-    page_title="Profesor de Física IA",
-    page_icon="🚀",
+    page_title="AIrtin - Tu Profe de Física 1",
+    page_icon="🍎",
     layout="centered"
 )
 
-st.title("🚀 Tu Profesor Artificial de Física 1")
-st.write("¡Bienvenido al chat! Puedes escribirme tus dudas de Caída Libre o Movimiento Parabólico, o subir una imagen con tu problema.")
+st.markdown("""
+    <style>
+    .main { background-color: #0f172a; }
+    h1 { color: #38bdf8 !important; text-align: center; font-family: 'Arial', sans-serif; font-weight: bold; }
+    .stButton>button { background-color: #ec4899 !important; color: white !important; border-radius: 20px; }
+    </style>
+""", unsafe_allow_html=True)
 
-# --- CONFIGURACIÓN DE LA IA ---
+st.title("👨‍🏫 AIrtin: Tu Profesor de Física 1")
+st.write("¡A ver, entren, entren! Saquen una hoja... mentira. Pregúntame lo que quieras de física, teoría o problemas. Puedes hablarme, escribirme o subir la foto de ese ejercicio que no te sale.")
+
 API_KEY = "AQ.Ab8RN6JvCsVZXOqrtj1qfrR1o0z0GYW5gzfR5iArhc6tihqO6Q"
 client = genai.Client(api_key=API_KEY)
 
-# Instrucciones del sistema para el comportamiento del profesor
-system_instruction = """
-Eres un profesor experto en física mecánica especializado en Caída Libre y Movimiento Parabólico.
-Responde de forma interactiva y amigable a través de este chat. Si te dan un problema:
-1. Enumera los datos explícitos e implícitos.
-2. Muestra las fórmulas antes de operar.
-3. Muestra el desarrollo matemático paso a paso de forma clara.
-4. Destaca el resultado final con sus unidades en el Sistema Internacional.
-"""
+st.sidebar.header("⚙️ Configuración de la Clase")
+modo_explicacion = st.sidebar.selectbox(
+    "¿En qué tono quieres la clase?",
+    ["👶 Modo Niño (Para que tu sobrinito entienda)", 
+     "🎓 Modo Universitario (Prepárate para la PC)",
+     "🧪 Modo Experimento (Para vagos, digo, dinámicos)"]
+)
 
-# --- HISTORIAL DEL CHAT (Session State) ---
-# Si es la primera vez que se abre la app, inicializamos el historial
+st.sidebar.markdown("---")
+st.sidebar.header("📁 Adjuntar Ejercicio")
+imagen_subida = st.sidebar.file_uploader("Sube la foto del problema:", type=["png", "jpg", "jpeg"])
+
 if "messages" not in st.session_state:
     st.session_state.messages = [
-        {"role": "assistant", "content": "¡Hola! Soy tu tutor de física. ¿Qué problema o concepto quieres resolver hoy?"}
+        {"role": "assistant", "content": "¡Buenas noches con todos! Soy AIrtin, tu clon virtual de Física 1. A ver, ¿quién va a ser el valiente que va a lanzar la primera duda hoy? No muerdo, solo jalo en los exámenes si no repasan. 🚀"}
     ]
 
-# Mostrar los mensajes anteriores del historial en la pantalla
 for message in st.session_state.messages:
     with st.chat_message(message["role"]):
         st.markdown(message["content"])
-        if "image" in message:
-            st.image(message["image"], caption="Imagen analizada", use_container_width=True)
+        if "audio" in message:
+            st.audio(message["audio"], format="audio/mp3")
 
-# --- ENTRADAS MULTIMODALES EN LA BARRA LATERAL ---
-st.sidebar.header("📁 Archivos Adjuntos")
-imagen_subida = st.sidebar.file_uploader(
-    "Sube una foto del problema o diagrama:", 
-    type=["png", "jpg", "jpeg"]
+st.write("---")
+st.write("🎙️ **¿Te da flojera escribir? Habla por el micrófono:**")
+audio_grabado = mic_recorder(
+    start_prompt="🔴 Hablar con Martín",
+    stop_prompt="⏹️ Enviar audio",
+    key='extractor_mic',
+    just_once=True
 )
 
-# --- CASILLA DE TEXTO DEL CHAT ---
-if prompt := st.chat_input("Escribe tu duda o problema aquí..."):
-    
-    # 1. Mostrar el mensaje del usuario en la pantalla y guardarlo en el historial
+prompt = st.chat_input("Escribe tu duda aquí...")
+audio_bytes = None
+
+if audio_grabado and 'bytes' in audio_grabado:
+    audio_bytes = audio_grabado['bytes']
+    prompt = "Contesta a la nota de audio adjunta"
+
+if prompt:
     with st.chat_message("user"):
-        st.markdown(prompt)
+        if audio_bytes:
+            st.markdown("🎤 *Mensaje de voz enviado*")
+            st.audio(audio_bytes, format="audio/wav")
+        else:
+            st.markdown(prompt)
+            
+    st.session_state.messages.append({"role": "user", "content": prompt if not audio_bytes else "🎤 Mensaje de voz"})
+
+    perfil_instrucciones = f"Estás dictando clase en {modo_explicacion}. "
+    system_instruction = perfil_instrucciones + """
+    Eres AIrtin, un profesor de física 1 universitario llamado Martín. Tienes un humor muy característico de docente: 
+    eres carismático, lanzas bromas típicas de salón, usas frases como '¡A ver, presten atención atrás!', '¡Esto viene en la Práctica Calificada (PC)!', 
+    'No se duerman', o ironías amigables sobre los que se copian o dejan todo para el final.
+    Respondes CUALQUIER duda de física. Si te dan un problema, resuélvelo con rigurosidad matemática paso a paso:
+    1. Datos explícitos e implícitos (haz un chiste si se olvidan de la gravedad).
+    2. Fórmulas completas.
+    3. Desarrollo matemático claro.
+    4. Resultado final bien marcado.
+    Mantén siempre el personaje de Martín ingenioso y dinámico.
+    """
+
+    contenido_solicitud = []
     
-    nuevo_mensaje_usuario = {"role": "user", "content": prompt}
-    
-    # Si el usuario subió una imagen, la procesamos y la guardamos junto al mensaje
-    imagen_pil = None
+    if audio_bytes:
+        contenido_solicitud.append({"mime_type": "audio/wav", "data": audio_bytes})
+    else:
+        contenido_solicitud.append(prompt)
+        
     if imagen_subida:
         imagen_pil = Image.open(imagen_subida)
-        with st.chat_message("user"):
-            st.image(imagen_pil, caption="Imagen adjunta", use_container_width=True)
-        nuevo_mensaje_usuario["image"] = imagen_pil
-        
-    st.session_state.messages.append(nuevo_mensaje_usuario)
+        contenido_solicitud.append(imagen_pil)
 
-    # 2. Generar la respuesta de la IA
     with st.chat_message("assistant"):
-        with st.spinner("Pensando como físico... 🧠"):
+        with st.spinner("Buscando las tizas y borrando la pizarra... 👨‍🏫"):
             try:
-                # Armamos la solicitud para la API de Gemini
-                contenido_solicitud = [prompt]
-                if imagen_pil:
-                    contenido_solicitud.append(imagen_pil)
-                
-                # Llamada al modelo Gemini 2.5 Flash
                 response = client.models.generate_content(
                     model='gemini-2.5-flash',
                     contents=contenido_solicitud,
-                    config={"system_instruction": system_instruction, "temperature": 0.2}
+                    config={"system_instruction": system_instruction, "temperature": 0.5}
                 )
                 
                 respuesta_texto = response.text
                 st.markdown(respuesta_texto)
                 
-                # Guardar la respuesta del asistente en el historial
-                st.session_state.messages.append({"role": "assistant", "content": respuesta_texto})
+                audio_response = client.models.generate_content(
+                    model='gemini-2.5-flash',
+                    contents=f"Lee en voz alta de forma natural, imitando el tono de un profesor de universidad hablando con sus alumnos, sin leer asteriscos ni símbolos: {respuesta_texto}",
+                    config={"response_mime_type": "audio/mp3"}
+                )
                 
-            except Exception as e:
-                # Intento de respaldo si falla el modelo principal
-                try:
-                    response = client.models.generate_content(
-                        model='gemini-1.5-flash',
-                        contents=contenido_solicitud,
-                        config={"system_instruction": system_instruction, "temperature": 0.2}
-                    )
-                    respuesta_texto = response.text
-                    st.markdown(respuesta_texto)
+                if hasattr(audio_response, 'inline_data') or (audio_response.text and "audio" in str(audio_response)):
+                    st.audio(audio_response.text, format="audio/mp3")
+                    st.session_state.messages.append({"role": "assistant", "content": respuesta_texto, "audio": audio_response.text})
+                else:
                     st.session_state.messages.append({"role": "assistant", "content": respuesta_texto})
-                except Exception as e_backup:
-                    st.error(f"Error al conectar con la IA: {e_backup}")
+                    
+            except Exception as e:
+                st.error(f"¡Un lapsus! Se nos cayó la tiza del servidor: {e}")
