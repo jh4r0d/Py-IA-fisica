@@ -311,18 +311,20 @@ if prompt:
                     js_audio = f"""
                     <div style="margin-top:15px; background: rgba(0,0,0,0.03); padding: 12px; border-radius: 10px; border-left: 4px solid {btn_color};">
                         <p style="font-size:14px; color:#2c3e50; font-family: 'Comic Sans MS', sans-serif; margin:0 0 8px 0;">🔊 <b>¡AIrtin te está leyendo la respuesta en voz alta!</b></p>
-                        <button onclick="window.speakResponse()" style="background:{btn_color}; color:#1c1c1c; border:1px solid #2c3e50; border-radius:8px; padding:4px 10px; font-size:12px; font-weight:bold; cursor:pointer;">▶️ Volver a escuchar</button>
+                        <button onclick="window.speakResponse(true)" style="background:{btn_color}; color:#1c1c1c; border:1px solid #2c3e50; border-radius:8px; padding:6px 12px; font-size:12px; font-weight:bold; cursor:pointer;">▶️ Volver a escuchar</button>
                     </div>
                     <script>
-                        window.speakResponse = function() {{
-                            window.speechSynthesis.cancel();
-                            var msg = new SpeechSynthesisUtterance(`{texto_limpio}`);
-                            msg.lang = 'es-ES';
-                            msg.rate = 0.95;
-                            msg.pitch = 1.0;
-                            window.speechSynthesis.speak(msg);
+                        window.speakResponse = function(forced = false) {{
+                            if ('speechSynthesis' in window) {{
+                                window.speechSynthesis.cancel();
+                                var msg = new SpeechSynthesisUtterance(`{texto_limpio}`);
+                                msg.lang = 'es-419';
+                                msg.rate = 0.95;
+                                msg.pitch = 1.0;
+                                window.speechSynthesis.speak(msg);
+                            }}
                         }};
-                        setTimeout(window.speakResponse, 400);
+                        setTimeout(function() {{ window.speakResponse(false); }}, 400);
                     </script>
                     """
                     st.markdown(js_audio, unsafe_allow_html=True)
