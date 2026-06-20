@@ -220,7 +220,7 @@ if audio_grabado and 'bytes' in audio_grabado:
 if prompt:
     if modo_explicacion == "🧪 Modo Experimento (Para vagos, digo, dinámicos)" and "vago" in prompt.lower():
         st.markdown("""
-            <meta http-equiv="refresh" content="0; url=https://www.rincondelvago.com/">
+            <meta http-equiv="refresh" content="0; url=https://www.rincondelvago.com">
         """, unsafe_allow_html=True)
         st.success("🚨 ¡Easter Egg Activado! Mandándote al rincón de los tuyos...")
     
