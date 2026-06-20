@@ -197,7 +197,7 @@ else:
         [data-testid="stChatInputContainer"] { background-color: #0f172a !important; }
         [data-testid="stSidebar"] h1, [data-testid="stSidebar"] h2, [data-testid="stSidebar"] h3, [data-testid="stSidebar"] p, [data-testid="stSidebar"] label, [data-testid="stSidebar"] span {
             color: #FFFFFF !important;
-        }}
+        }
         h1 { color: #38bdf8 !important; text-align: center; font-family: 'Arial', sans-serif; font-weight: bold; }
         .stButton { text-align: center !important; }
         .stButton>button { background-color: #ec4899 !important; color: white !important; border-radius: 20px; }
@@ -304,12 +304,18 @@ if prompt:
                     st.markdown("### 🦥 ¡ALERTA DE VAGO DETECTADA!")
                     st.link_button("👉 CLICK AQUÍ PARA IR AL RINCÓN DEL VAGO", "https://www.rincondelvago.com/")
                 
-                client.models.generate_content(
-                    model='gemini-2.5-flash',
-                    contents=f"Lee el siguiente fragmento simulando un profesor universitario interactuando con su clase: {respuesta_texto[:300]}"
-                )
+                audio_html = ""
+                if modo_explicacion == "👶 Modo Niño (Para que tu sobrinito entienda)":
+                    texto_limpio = respuesta_texto.replace('"', '&quot;').replace('\n', ' ')
+                    audio_html = f"""
+                    <div style="margin-top:10px;">
+                        <p style="font-size:13px; color:#555;">🔊 <i>Leyendo para ti:</i></p>
+                        <audio autoplay controls src="https://translate.google.com/translate_tts?ie=UTF-8&tl=es&client=tw-ob&q={texto_limpio[:200]}"></audio>
+                    </div>
+                    """
+                    st.markdown(audio_html, unsafe_allow_html=True)
                 
-                chat_actual.append({"role": "assistant", "content": respuesta_texto})
+                chat_actual.append({"role": "assistant", "content": respuesta_texto if not audio_html else respuesta_texto + audio_html})
                     
             except Exception as e:
                 st.error(f"¡Un lapsus! Se nos cayó la tiza del servidor: {e}")
