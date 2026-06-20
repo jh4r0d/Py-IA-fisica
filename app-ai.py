@@ -3,9 +3,9 @@ from google import genai
 from google.genai import types
 from PIL import Image
 from streamlit_mic_recorder import mic_recorder
+from gtts import gTTS
 import io
 import random
-import urllib.parse
 import re
 
 st.set_page_config(
@@ -306,22 +306,21 @@ if prompt:
                     st.markdown("### 🦥 ¡ALERTA DE VAGO DETECTADA!")
                     st.link_button("👉 CLICK AQUÍ PARA IR AL RINCÓN DEL VAGO", "https://www.rincondelvago.com/")
                 
-                audio_html = ""
+                audio_data = None
                 if modo_explicacion == "👶 Modo Niño (Para que tu sobrinito entienda)":
                     texto_limpio = re.sub(r'[*_#`~]', '', respuesta_texto)
                     texto_limpio = re.sub(r'[^\w\s.,?!áéíóúÁÉÍÓÚñÑ]', '', texto_limpio)
-                    texto_limpio = " ".join(texto_limpio.split()[:35])
-                    texto_codificado = urllib.parse.quote(texto_limpio)
+                    texto_limpio = " ".join(texto_limpio.split()[:40])
                     
-                    audio_html = f"""
-                    <div style="margin-top:15px; background: rgba(0,0,0,0.03); padding: 10px; border-radius: 10px;">
-                        <p style="font-size:14px; color:#2c3e50; font-family: 'Comic Sans MS', sans-serif; margin-bottom:5px;">🔊 <b>¡Escucha la respuesta aquí abajo!</b></p>
-                        <audio controls src="https://translate.google.com/translate_tts?ie=UTF-8&tl=es&client=tw-ob&q={texto_codificado}"></audio>
-                    </div>
-                    """
-                    st.markdown(audio_html, unsafe_allow_html=True)
+                    if texto_limpio.strip():
+                        tts = gTTS(text=texto_limpio, lang='es', tld='com')
+                        fp = io.BytesIO()
+                        tts.write_to_fp(fp)
+                        fp.seek(0)
+                        audio_data = fp.read()
+                        st.audio(audio_data, format="audio/mp3")
                 
-                chat_actual.append({"role": "assistant", "content": respuesta_texto if not audio_html else respuesta_texto + audio_html})
+                chat_actual.append({"role": "assistant", "content": respuesta_texto, "audio": audio_data})
                     
             except Exception as e:
                 st.error(f"¡Un lapsus! Se nos cayó la tiza del servidor: {e}")
