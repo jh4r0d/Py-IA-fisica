@@ -17,6 +17,19 @@ if "prev_modo" not in st.session_state:
 if "pastel_colors" not in st.session_state:
     st.session_state.pastel_colors = ["#FAFAFA", "#FFE3E3", "#E8F5E9", "#FFF9E6"]
 
+if "messages_nino" not in st.session_state:
+    st.session_state.messages_nino = [
+        {"role": "assistant", "content": "¡Hola, pequeño gran explorador del universo! ✨ Soy AIrtin, tu compañero de aventuras científicas. ¿Qué misterio de la naturaleza o curiosidad te gustaría descubrir juntos hoy? ¡Pregúntame con toda confianza! 🌟"}
+    ]
+if "messages_uni" not in st.session_state:
+    st.session_state.messages_uni = [
+        {"role": "assistant", "content": "¡Buenas noches con todos! Soy AIrtin, tu clon virtual de Física 1. A ver, ¿quién va a ser el valiente que va a lanzar la primera duda hoy? No muerdo, solo jalo en los exámenes si no repasan. 🚀"}
+    ]
+if "messages_exp" not in st.session_state:
+    st.session_state.messages_exp = [
+        {"role": "assistant", "content": "¡Buenas! Bienvenidos al laboratorio de experimentos prácticos. Aquí venimos a aprender física rompiendo cosas en casa (de manera segura, claro). ¿Qué quieren probar hoy? No se queden como vagos. 🧪"}
+    ]
+
 st.sidebar.header("⚙️ Configuración de la Clase")
 modo_explicacion = st.sidebar.selectbox(
     "¿En qué tono quieres la clase?",
@@ -24,6 +37,13 @@ modo_explicacion = st.sidebar.selectbox(
      "🎓 Modo Universitario (Prepárate para la PC)",
      "🧪 Modo Experimento (Para vagos, digo, dinámicos)"]
 )
+
+if modo_explicacion == "👶 Modo Niño (Para que tu sobrinito entienda)":
+    chat_actual = st.session_state.messages_nino
+elif modo_explicacion == "🎓 Modo Universitario (Prepárate para la PC)":
+    chat_actual = st.session_state.messages_uni
+else:
+    chat_actual = st.session_state.messages_exp
 
 if modo_explicacion != st.session_state.prev_modo:
     if modo_explicacion == "👶 Modo Niño (Para que tu sobrinito entienda)":
@@ -46,8 +66,8 @@ if modo_explicacion == "👶 Modo Niño (Para que tu sobrinito entienda)":
         [data-testid="stSidebar"] {{
             background-color: {bg_zonas_rojas} !important;
         }}
-        [data-testid="stSidebar"] * {{
-            color: #2c3e50 !important;
+        [data-testid="stSidebar"] h1, [data-testid="stSidebar"] h2, [data-testid="stSidebar"] h3, [data-testid="stSidebar"] p, [data-testid="stSidebar"] label, [data-testid="stSidebar"] span {{
+            color: #FFFFFF !important;
         }}
         [data-testid="stBottomBlockContainer"] {{
             background-color: {bg_zonas_rojas} !important;
@@ -175,6 +195,9 @@ else:
         <style>
         .stApp, [data-testid="stSidebar"], [data-testid="stHeader"], [data-testid="stBottomBlockContainer"] { background-color: #0f172a !important; }
         [data-testid="stChatInputContainer"] { background-color: #0f172a !important; }
+        [data-testid="stSidebar"] h1, [data-testid="stSidebar"] h2, [data-testid="stSidebar"] h3, [data-testid="stSidebar"] p, [data-testid="stSidebar"] label, [data-testid="stSidebar"] span {
+            color: #FFFFFF !important;
+        }}
         h1 { color: #38bdf8 !important; text-align: center; font-family: 'Arial', sans-serif; font-weight: bold; }
         .stButton { text-align: center !important; }
         .stButton>button { background-color: #ec4899 !important; color: white !important; border-radius: 20px; }
@@ -191,12 +214,7 @@ st.sidebar.markdown("---")
 st.sidebar.header("📁 Adjuntar Ejercicio")
 imagen_subida = st.sidebar.file_uploader("Sube la foto del problema:", type=["png", "jpg", "jpeg"])
 
-if "messages" not in st.session_state:
-    st.session_state.messages = [
-        {"role": "assistant", "content": "¡Buenas noches con todos! Soy AIrtin, tu clon virtual de Física 1. A ver, ¿quién va a ser el valiente que va a lanzar la primera duda hoy? No muerdo, solo jalo en los exámenes si no repasan. 🚀"}
-    ]
-
-for message in st.session_state.messages:
+for message in chat_actual:
     with st.chat_message(message["role"]):
         st.markdown(message["content"])
         if "audio" in message:
@@ -230,20 +248,29 @@ if prompt:
         else:
             st.markdown(prompt)
             
-    st.session_state.messages.append({"role": "user", "content": prompt if not audio_bytes else "🎤 Mensaje de voz"})
+    chat_actual.append({"role": "user", "content": prompt if not audio_bytes else "🎤 Mensaje de voz"})
 
     perfil_instrucciones = f"Estás dictando clase en {modo_explicacion}. "
-    system_instruction = perfil_instrucciones + """
-    Eres AIrtin, un profesor de física 1 universitario llamado Martín. Tienes un humor muy característico de docente: 
-    eres carismático, lanzas bromas típicas de salón, usas frases como '¡A ver, presten atención atrás!', '¡Esto viene en la Práctica Calificada (PC)!', 
-    'No se duerman', o ironías amigables sobre los que se copian o dejan todo para el final.
-    Respondes CUALQUIER duda de física. Si te dan un problema, resuélvelo con rigurosidad matemática paso a paso:
-    1. Datos explícitos e implícitos (haz un chiste si se olvidan de la gravedad).
-    2. Fórmulas completas.
-    3. Desarrollo matemático claro.
-    4. Resultado final bien marcado.
-    Mantén siempre el personaje de Martín ingenioso y dinámico.
-    """
+    
+    if modo_explicacion == "👶 Modo Niño (Para que tu sobrinito entienda)":
+        system_instruction = perfil_instrucciones + """
+        Eres AIrtin, pero en esta ocasión te estás comunicando con niños pequeños. Modifica tu comportamiento por completo: 
+        sé extremadamente educado, gentil, cariñoso y paciente. No uses bromas de jalar exámenes, prácticas calificadas, amanecidas o copiar. 
+        Explica los conceptos de física con mucha ternura, usando analogías muy fáciles basadas en superhéroes, caramelos, magia, cuentos o animales. 
+        Mantén un tono de maestro de primaria muy alegre, motivador, que los felicite por su curiosidad y use muchos emojis bonitos.
+        """
+    else:
+        system_instruction = perfil_instrucciones + """
+        Eres AIrtin, un profesor de física 1 universitario llamado Martín. Tienes un humor muy característico de docente: 
+        eres carismático, lanzas bromas típicas de salón, usas frases como '¡A ver, presten atención atrás!', '¡Esto viene en la Práctica Calificada (PC)!', 
+        'No se duerman', o ironías amigables sobre los que se copian o dejan todo para el final.
+        Respondes CUALQUIER duda de física. Si te dan un problema, resuélvelo con rigurosidad matemática paso a paso:
+        1. Datos explícitos e implícitos (haz un chiste si se olvidan de la gravedad).
+        2. Fórmulas completas.
+        3. Desarrollo matemático claro.
+        4. Resultado final bien marcado.
+        Mantén siempre el personaje de Martín ingenioso y dinámico.
+        """
 
     contenido_solicitud = []
     
@@ -277,13 +304,12 @@ if prompt:
                     st.markdown("### 🦥 ¡ALERTA DE VAGO DETECTADA!")
                     st.link_button("👉 CLICK AQUÍ PARA IR AL RINCÓN DEL VAGO", "https://www.rincondelvago.com/")
                 
-                # Usamos una llamada de texto simple para evitar fallos de compatibilidad en el modelo
-                audio_response = client.models.generate_content(
+                client.models.generate_content(
                     model='gemini-2.5-flash',
                     contents=f"Lee el siguiente fragmento simulando un profesor universitario interactuando con su clase: {respuesta_texto[:300]}"
                 )
                 
-                st.session_state.messages.append({"role": "assistant", "content": respuesta_texto})
+                chat_actual.append({"role": "assistant", "content": respuesta_texto})
                     
             except Exception as e:
                 st.error(f"¡Un lapsus! Se nos cayó la tiza del servidor: {e}")
