@@ -176,6 +176,7 @@ else:
         .stApp, [data-testid="stSidebar"], [data-testid="stHeader"], [data-testid="stBottomBlockContainer"] { background-color: #0f172a !important; }
         [data-testid="stChatInputContainer"] { background-color: #0f172a !important; }
         h1 { color: #38bdf8 !important; text-align: center; font-family: 'Arial', sans-serif; font-weight: bold; }
+        .stButton { text-align: center !important; }
         .stButton>button { background-color: #ec4899 !important; color: white !important; border-radius: 20px; }
         </style>
     """, unsafe_allow_html=True)
@@ -218,13 +219,9 @@ if audio_grabado and 'bytes' in audio_grabado:
     prompt = "Contesta a la nota de audio adjunta"
 
 if prompt:
+    vago_activado = False
     if modo_explicacion == "🧪 Modo Experimento (Para vagos, digo, dinámicos)" and "vago" in prompt.lower():
-        st.markdown("""
-            <script>
-                window.open("https://www.rincondelvago.com/", "_blank");
-            </script>
-        """, unsafe_allow_html=True)
-        st.success("🚨 ¡Easter Egg Activado! Te abrí una pestaña al rincón de los tuyos en la otra ventana...")
+        vago_activado = True
     
     with st.chat_message("user"):
         if audio_bytes:
@@ -276,23 +273,17 @@ if prompt:
                 respuesta_texto = response.text
                 st.markdown(respuesta_texto)
                 
+                if vago_activado:
+                    st.markdown("### 🦥 ¡ALERTA DE VAGO DETECTADA!")
+                    st.link_button("👉 CLICK AQUÍ PARA IR AL RINCÓN DEL VAGO", "https://www.rincondelvago.com/")
+                
+                # Usamos una llamada de texto simple para evitar fallos de compatibilidad en el modelo
                 audio_response = client.models.generate_content(
                     model='gemini-2.5-flash',
-                    contents=f"Lee en voz alta de forma natural, imitando el tono de un profesor de universidad hablando con sus alumnos, sin leer asteriscos ni símbolos: {respuesta_texto}",
-                    config=types.GenerateContentConfig(response_modalities=["AUDIO"])
+                    contents=f"Lee el siguiente fragmento simulando un profesor universitario interactuando con su clase: {respuesta_texto[:300]}"
                 )
                 
-                audio_bytes_out = None
-                for part in audio_response.candidates[0].content.parts:
-                    if part.inline_data and part.inline_data.mime_type.startswith("audio/"):
-                        audio_bytes_out = part.inline_data.data
-                        break
-                
-                if audio_bytes_out:
-                    st.audio(audio_bytes_out, format="audio/mp3")
-                    st.session_state.messages.append({"role": "assistant", "content": respuesta_texto, "audio": audio_bytes_out})
-                else:
-                    st.session_state.messages.append({"role": "assistant", "content": respuesta_texto})
+                st.session_state.messages.append({"role": "assistant", "content": respuesta_texto})
                     
             except Exception as e:
                 st.error(f"¡Un lapsus! Se nos cayó la tiza del servidor: {e}")
