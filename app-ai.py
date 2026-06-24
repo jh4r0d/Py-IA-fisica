@@ -75,14 +75,22 @@ if modo_explicacion == "👶 Modo Niño (Para que tu sobrinito entienda)":
         
         /* TEXTOS DEL CUERPO PRINCIPAL */
         .stApp .stMarkdown p, .stApp h1, .stApp h2, .stApp h3, .stApp label, .stApp span {{
-            color: #2c3e50 !important;
+            color: #2c3e50;
             font-family: 'Comic Sans MS', sans-serif;
         }}
         
-        /* SOLUCIÓN AL TEXTO SMART_TOY ENCIMADO */
-        [data-testid="stChatMessageHeader"] div, [data-testid="stChatMessageHeader"] span {{
+        /* SOLUCIÓN QUIRÚRGICA PARA EVITAR QUE SE ENCIERREN TEXTOS DE AVATAR U ÍCONOS */
+        [data-testid="stChatMessageHeader"] {{
+            display: flex !important;
+            align-items: center !important;
+        }}
+        [data-testid="stChatMessageHeader"] div:first-child {{
             color: transparent !important;
-            -webkit-text-fill-color: transparent !important;
+            font-size: 0px !important;
+            line-height: 0 !important;
+        }}
+        [data-testid="stSidebarCollapsedControl"] span {{
+            color: transparent !important;
             font-size: 0px !important;
         }}
         
@@ -160,10 +168,14 @@ else:
             font-weight: bold; 
         }
         
-        /* SOLUCIÓN AL TEXTO SMART_TOY ENCIMADO EN MODO OSCURO */
-        [data-testid="stChatMessageHeader"] div, [data-testid="stChatMessageHeader"] span {
+        /* SOLUCIÓN DEFINITIVA TEXTOS INTERNOS EN MODO OSCURO */
+        [data-testid="stChatMessageHeader"] div:first-child {
             color: transparent !important;
-            -webkit-text-fill-color: transparent !important;
+            font-size: 0px !important;
+            line-height: 0 !important;
+        }
+        [data-testid="stSidebarCollapsedControl"] span {
+            color: transparent !important;
             font-size: 0px !important;
         }
         
