@@ -53,7 +53,7 @@ if modo_explicacion != st.session_state.prev_modo:
         st.session_state.pastel_colors = ["#FAFAFA", elegidos[0], elegidos[1], elegidos[2]]
     st.session_state.prev_modo = modo_explicacion
 
-# --- INYECCIÓN DE ESTILOS CON CONTRASTE ALTO SEGÚN EL ENTORNO ---
+# --- SISTEMA DE ESTILOS DE ALTO CONTRASTE QUIRÚRGICO ---
 if modo_explicacion == "👶 Modo Niño (Para que tu sobrinito entienda)":
     bg_chat = st.session_state.pastel_colors[0]
     bg_entorno = st.session_state.pastel_colors[1]
@@ -62,38 +62,40 @@ if modo_explicacion == "👶 Modo Niño (Para que tu sobrinito entienda)":
     
     st.markdown(f"""
         <style>
-        /* CONTRASTE MODO CLARO / PASTEL NIÑOS: Todo el texto base debe ser Oscuro (#2c3e50) */
+        /* FONDOS MODO NIÑO */
         .stApp, [data-testid="stHeader"], [data-testid="stSidebarCollapsedControl"] {{
             background-color: {bg_entorno} !important;
         }}
         [data-testid="stSidebar"] {{
             background-color: {bg_zonas_rojas} !important;
         }}
-        [data-testid="stSidebar"] h1, [data-testid="stSidebar"] h2, [data-testid="stSidebar"] h3, [data-testid="stSidebar"] p, [data-testid="stSidebar"] label, [data-testid="stSidebar"] span, [data-testid="stSidebar"] li {{
-            color: #FFFFFF !important;
-        }}
         [data-testid="stBottomBlockContainer"] {{
             background-color: {bg_zonas_rojas} !important;
         }}
         
-        /* Modificadores globales de texto en el cuerpo principal */
-        .stApp p, .stApp span, .stApp label, .stApp li, .stApp div, .stApp h1, .stApp h2, .stApp h3 {{
+        /* TEXTOS DEL CUERPO PRINCIPAL */
+        .stApp .stMarkdown p, .stApp h1, .stApp h2, .stApp h3, .stApp label, .stApp span {{
             color: #2c3e50 !important;
             font-family: 'Comic Sans MS', sans-serif;
         }}
         
-        /* Bloques de chat */
+        /* BARRA LATERAL (TEXTOS) */
+        [data-testid="stSidebar"] h1, [data-testid="stSidebar"] h2, [data-testid="stSidebar"] h3, [data-testid="stSidebar"] p, [data-testid="stSidebar"] label, [data-testid="stSidebar"] span {{
+            color: #FFFFFF !important;
+        }}
+        
+        /* CAJAS DE MENSAJES */
         .stChatMessage, [data-testid="stChatMessage"] {{
             background-color: {bg_chat} !important;
             border-radius: 15px !important;
             border: 3px solid {btn_color} !important;
             padding: 15px !important;
         }}
-        .stChatMessage p, .stChatMessage span, .stChatMessage li, .stChatMessage div {{
+        .stChatMessage .stMarkdown p, .stChatMessage span {{
             color: #2c3e50 !important;
         }}
         
-        /* Entrada de texto del chat */
+        /* ENTRADA DE TEXTO DEL CHAT */
         [data-testid="stChatInputContainer"] {{
             background-color: transparent !important;
             border: none !important;
@@ -108,12 +110,8 @@ if modo_explicacion == "👶 Modo Niño (Para que tu sobrinito entienda)":
             color: #2c3e50 !important;
             -webkit-text-fill-color: #2c3e50 !important;
         }}
-        [data-testid="stChatInput"] textarea::placeholder {{
-            color: #7f8c8d !important;
-            -webkit-text-fill-color: #7f8c8d !important;
-        }}
 
-        /* Componente de subida de archivos */
+        /* SUBIDA DE ARCHIVOS */
         [data-testid="stFileUploader"] section {{
             background-color: #FAFAFA !important;
             border: 2px dashed #2c3e50 !important;
@@ -124,10 +122,8 @@ if modo_explicacion == "👶 Modo Niño (Para que tu sobrinito entienda)":
         [data-testid="stFileUploader"] button {{
             background-color: #2c3e50 !important;
             color: #FFFFFF !important;
-            border: none !important;
         }}
         
-        /* Botones generales */
         .stButton>button {{ 
             background-color: {btn_color} !important; 
             color: #1c1c1c !important; 
@@ -135,43 +131,41 @@ if modo_explicacion == "👶 Modo Niño (Para que tu sobrinito entienda)":
             font-weight: bold; 
             border: 2px solid #2c3e50 !important;
         }}
-        .stAlert p {{
-            color: #1c1c1c !important;
-        }}
         </style>
     """, unsafe_allow_html=True)
 else:
     st.markdown("""
         <style>
-        /* CONTRASTE MODO OSCURO (UNI/EXP): Todo el texto base debe ser Blanco Puro (#FFFFFF) o Celeste (#38bdf8) */
+        /* FONDOS MODO OSCURO (UNIVERSITARIO / EXPERIMENTO) */
         .stApp, [data-testid="stSidebar"], [data-testid="stHeader"], [data-testid="stBottomBlockContainer"] { 
             background-color: #0f172a !important; 
         }
         
-        /* Forzar texto blanco en toda la aplicación principal para que resalte sobre el azul oscuro */
-        .stApp p, .stApp span, .stApp label, .stApp li, .stApp div, [data-testid="stSidebar"] p, [data-testid="stSidebar"] label, [data-testid="stSidebar"] span, [data-testid="stSidebar"] li {
+        /* TEXTOS DEL CUERPO Y SIDEBAR (Solo a elementos de lectura, no a contenedores estructurales) */
+        .stApp .stMarkdown p, .stApp label, [data-testid="stSidebar"] p, [data-testid="stSidebar"] label {
             color: #FFFFFF !important;
             font-family: 'Arial', sans-serif;
         }
         
-        /* Títulos */
         h1, h2, h3 { 
             color: #38bdf8 !important; 
             font-family: 'Arial', sans-serif; 
             font-weight: bold; 
         }
         
-        /* Cajas de mensajes dentro del chat */
-        .stChatMessage, [data-testid="stChatMessage"] {
+        /* TEXTO DENTRO DE LOS BLOQUES DE CHAT NATIVOS */
+        [data-testid="stChatMessage"] {
             background-color: #1e293b !important;
             border: 1px solid #334155 !important;
         }
-        .stChatMessage p, .stChatMessage span, .stChatMessage li, .stChatMessage div {
+        [data-testid="stChatMessage"] .stMarkdown p {
             color: #FFFFFF !important;
         }
         
-        /* Entrada de texto de chat (Fondo intermedio, letras blancas nítidas) */
-        [data-testid="stChatInputContainer"] { background-color: #0f172a !important; }
+        /* ENTRADA DE TEXTO (CHAT INPUT) SIN AFECTAR EL TEXTAREA INTERNO */
+        [data-testid="stChatInputContainer"] { 
+            background-color: #0f172a !important; 
+        }
         [data-testid="stChatInput"] {
             background-color: #1e293b !important;
             border: 2px solid #38bdf8 !important;
@@ -185,7 +179,7 @@ else:
             -webkit-text-fill-color: #94a3b8 !important;
         }
 
-        /* Subida de archivos */
+        /* SUBIDA DE ARCHIVOS */
         [data-testid="stFileUploader"] section {
             background-color: #1e293b !important;
             border: 1px dashed #38bdf8 !important;
@@ -199,21 +193,18 @@ else:
             font-weight: bold !important;
         }
 
-        /* Botones decorativos */
-        .stButton { text-align: center !important; }
         .stButton>button { 
             background-color: #ec4899 !important; 
             color: white !important; 
             border-radius: 20px; 
             font-weight: bold !important;
-        }
+        }}
         </style>
     """, unsafe_allow_html=True)
 
 st.title("👨‍🏫 AIrtin: Tu Profesor de Física 1")
 st.write("¡A ver, entren, entren! Saquen una hoja... mentira. Pregúntame lo que quieras de física, teoría o problemas. Puedes hablarme, escribirme o subir la foto de ese ejercicio que no te sale.")
 
-# --- LISTA DE CLAVES DISPONIBLES ---
 POOL_KEYS = [
     "AQ.Ab8RN6JvCsVZXOqrtj1qfrR1o0z0GYW5gzfR5iArhc6tihqO6Q",
     "AIzaSyB7tGeuVKL_1Wz85UZdqCeL60Eh8YHD_6w",
