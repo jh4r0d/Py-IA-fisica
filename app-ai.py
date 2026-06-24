@@ -82,19 +82,45 @@ if modo_explicacion == "👶 Modo Niño (Para que tu sobrinito entienda)":
         .stChatMessage * {{
             color: #2c3e50 !important;
         }}
+        
+        /* CORRECCIÓN DEL FILE UPLOADER EN MODO NIÑO */
+        [data-testid="stFileUploader"] section {{
+            background-color: #FAFAFA !important;
+            border: 2px dashed #2c3e50 !important;
+        }}
+        [data-testid="stFileUploader"] p, [data-testid="stFileUploader"] span, [data-testid="stFileUploader"] small {{
+            color: #2c3e50 !important;
+        }}
+        [data-testid="stFileUploader"] button {{
+            background-color: #2c3e50 !important;
+            color: #FFFFFF !important;
+            border: none !important;
+        }}
+        [data-testid="stFileUploader"] button:hover {{
+            background-color: #1a252f !important;
+            color: #FFFFFF !important;
+        }}
+
+        /* CORRECCIÓN DE LA BARRA DE CHAT EN MODO NIÑO */
         [data-testid="stChatInputContainer"] {{
             background-color: transparent !important;
             border: none !important;
         }}
         [data-testid="stChatInput"] {{
-            background-color: {bg_chat} !important;
+            background-color: #FFFFFF !important;
             border: 3px solid {btn_color} !important;
             border-radius: 15px !important;
         }}
         [data-testid="stChatInput"] textarea {{
             background-color: transparent !important;
-            color: #1c1c1c !important;
+            color: #2c3e50 !important;
+            -webkit-text-fill-color: #2c3e50 !important;
         }}
+        [data-testid="stChatInput"] textarea::placeholder {{
+            color: #7f8c8d !important;
+            -webkit-text-fill-color: #7f8c8d !important;
+        }}
+        
         h1 {{ 
             color: #2c3e50 !important; 
             text-align: center; 
@@ -122,7 +148,35 @@ else:
     st.markdown("""
         <style>
         .stApp, [data-testid="stSidebar"], [data-testid="stHeader"], [data-testid="stBottomBlockContainer"] { background-color: #0f172a !important; }
+        
+        /* CORRECCIÓN DE LA BARRA DE CHAT EN MODO OSCURO */
         [data-testid="stChatInputContainer"] { background-color: #0f172a !important; }
+        [data-testid="stChatInput"] {
+            background-color: #1e293b !important;
+            border: 1px solid #38bdf8 !important;
+        }
+        [data-testid="stChatInput"] textarea {
+            color: #FFFFFF !important;
+            -webkit-text-fill-color: #FFFFFF !important;
+        }
+        [data-testid="stChatInput"] textarea::placeholder {
+            color: #94a3b8 !important;
+            -webkit-text-fill-color: #94a3b8 !important;
+        }
+
+        /* CORRECCIÓN DEL FILE UPLOADER EN MODO OSCURO */
+        [data-testid="stFileUploader"] section {
+            background-color: #1e293b !important;
+            border: 1px dashed #38bdf8 !important;
+        }
+        [data-testid="stFileUploader"] p, [data-testid="stFileUploader"] span, [data-testid="stFileUploader"] small {
+            color: #FFFFFF !important;
+        }
+        [data-testid="stFileUploader"] button {
+            background-color: #38bdf8 !important;
+            color: #0f172a !important;
+        }
+
         [data-testid="stSidebar"] h1, [data-testid="stSidebar"] h2, [data-testid="stSidebar"] h3, [data-testid="stSidebar"] p, [data-testid="stSidebar"] label, [data-testid="stSidebar"] span {
             color: #FFFFFF !important;
         }
@@ -135,13 +189,12 @@ else:
 st.title("👨‍🏫 AIrtin: Tu Profesor de Física 1")
 st.write("¡A ver, entren, entren! Saquen una hoja... mentira. Pregúntame lo que quieras de física, teoría o problemas. Puedes hablarme, escribirme o subir la foto de ese ejercicio que no te sale.")
 
+# --- LISTA DE CLAVES DISPONIBLES ---
 POOL_KEYS = [
     "AQ.Ab8RN6JvCsVZXOqrtj1qfrR1o0z0GYW5gzfR5iArhc6tihqO6Q",
     "AIzaSyB7tGeuVKL_1Wz85UZdqCeL60Eh8YHD_6w",
     "AIzaSyDBAG8oax2hRyuIzuSIWPp5-H-dvUNP_VE"
 ]
-API_KEY_ACTUAL = random.choice(POOL_KEYS)
-client = genai.Client(api_key=API_KEY_ACTUAL)
 
 st.sidebar.markdown("---")
 st.sidebar.header("📁 Adjuntar Ejercicio")
@@ -221,29 +274,46 @@ if prompt:
 
     with st.chat_message("assistant"):
         with st.spinner("Buscando las tizas y borrando la pizarra... 👨‍🏫"):
-            try:
-                response = client.models.generate_content(
-                    model='gemini-2.5-flash',
-                    contents=contenido_solicitud,
-                    config={"system_instruction": system_instruction, "temperature": 0.5}
-                )
-                
-                respuesta_texto = response.text
-                st.markdown(respuesta_texto)
-                
-                if vago_activado:
-                    st.markdown("### 🦥 ¡ALERTA DE VAGO DETECTADA!")
-                    st.link_button("👉 CLICK AQUÍ PARA IR AL RINCÓN DEL VAGO", "https://www.rincondelvago.com/")
-                
-                chat_actual.append({"role": "assistant", "content": respuesta_texto})
+            
+            # --- SISTEMA DE ROTACIÓN INTELIGENTE DE RESPALDO (FAILOVER) ---
+            response = None
+            ultimo_error = ""
+            random.shuffle(POOL_KEYS) # Desordenamos las llaves para distribuir el uso
+            
+            for key in POOL_KEYS:
+                try:
+                    client = genai.Client(api_key=key)
+                    response = client.models.generate_content(
+                        model='gemini-2.5-flash',
+                        contents=contenido_solicitud,
+                        config={"system_instruction": system_instruction, "temperature": 0.5}
+                    )
+                    if response:
+                        break # Si tuvo éxito, rompemos el bucle y continuamos
+                except Exception as e:
+                    ultimo_error = str(e)
+                    continue # Si falla una llave, pasa automáticamente a la siguiente
+
+            # --- VALIDACIÓN DE RESULTADOS ---
+            if response:
+                try:
+                    respuesta_texto = response.text
+                    st.markdown(respuesta_texto)
                     
-            except Exception as e:
-                if "429" in str(e) or "quota" in str(e).lower() or "limit" in str(e).lower():
+                    if vago_activado:
+                        st.markdown("### 🦥 ¡ALERTA DE VAGO DETECTADA!")
+                        st.link_button("👉 CLICK AQUÍ PARA IR AL RINCÓN DEL VAGO", "https://www.rincondelvago.com/")
+                    
+                    chat_actual.append({"role": "assistant", "content": respuesta_texto})
+                except Exception as e:
+                    st.error("🎒 **¡Un pequeño tropiezo en el salón de clases!** No pudimos procesar tu mensaje. Por favor, espera unos segundos e inténtalo de nuevo.")
+            else:
+                # Si todas las llaves fallaron por límite de cuota
+                if "429" in ultimo_error or "quota" in ultimo_error.lower() or "limit" in ultimo_error.lower():
                     segundos_espera = "10"
-                    match = re.search(r'retry in ([\d\.]+)', str(e))
+                    match = re.search(r'retry in ([\d\.]+)', ultimo_error)
                     if match:
                         segundos_espera = str(int(float(match.group(1))) + 1)
-                    
                     st.warning(f"⏳ **¡Uy, un segundo!** Como este es un chatbot educativo gratuito, tenemos que tomar turnos para usar la pizarra. Por favor, **espera {segundos_espera} segundos** y vuelve a enviar tu pregunta. ¡Muchas gracias por tu paciencia! 🎒")
                 else:
-                    st.error("🎒 **¡Un pequeño tropiezo en el salón de clases!** No pudimos procesar tu mensaje. Por favor, espera unos segundos e inténtalo de nuevo.")
+                    st.error("🎒 **¡Un pequeño tropiezo en el salón de clases!** No pudimos conectar con ninguna clave. Por favor, espera unos segundos e inténtalo de nuevo.")
