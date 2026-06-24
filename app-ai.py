@@ -73,29 +73,14 @@ if modo_explicacion == "👶 Modo Niño (Para que tu sobrinito entienda)":
             background-color: {bg_zonas_rojas} !important;
         }}
         
-        /* TEXTOS DEL CUERPO PRINCIPAL */
-        .stApp .stMarkdown p, .stApp h1, .stApp h2, .stApp h3, .stApp label, .stApp span {{
-            color: #2c3e50;
+        /* TEXTOS DEL CUERPO PRINCIPAL (PROTEGE LOS SPANS DE LOS ÍCONOS) */
+        .stApp .stMarkdown p, .stApp h1, .stApp h2, .stApp h3, .stApp label {{
+            color: #2c3e50 !important;
             font-family: 'Comic Sans MS', sans-serif;
         }}
         
-        /* SOLUCIÓN QUIRÚRGICA PARA EVITAR QUE SE ENCIERREN TEXTOS DE AVATAR U ÍCONOS */
-        [data-testid="stChatMessageHeader"] {{
-            display: flex !important;
-            align-items: center !important;
-        }}
-        [data-testid="stChatMessageHeader"] div:first-child {{
-            color: transparent !important;
-            font-size: 0px !important;
-            line-height: 0 !important;
-        }}
-        [data-testid="stSidebarCollapsedControl"] span {{
-            color: transparent !important;
-            font-size: 0px !important;
-        }}
-        
         /* BARRA LATERAL (TEXTOS) */
-        [data-testid="stSidebar"] h1, [data-testid="stSidebar"] h2, [data-testid="stSidebar"] h3, [data-testid="stSidebar"] p, [data-testid="stSidebar"] label, [data-testid="stSidebar"] span {{
+        [data-testid="stSidebar"] h1, [data-testid="stSidebar"] h2, [data-testid="stSidebar"] h3, [data-testid="stSidebar"] p, [data-testid="stSidebar"] label {{
             color: #FFFFFF !important;
         }}
         
@@ -106,7 +91,7 @@ if modo_explicacion == "👶 Modo Niño (Para que tu sobrinito entienda)":
             border: 3px solid {btn_color} !important;
             padding: 15px !important;
         }}
-        .stChatMessage .stMarkdown p, .stChatMessage span {{
+        .stChatMessage .stMarkdown p {{
             color: #2c3e50 !important;
         }}
         
@@ -124,6 +109,7 @@ if modo_explicacion == "👶 Modo Niño (Para que tu sobrinito entienda)":
             background-color: transparent !important;
             color: #2c3e50 !important;
             -webkit-text-fill-color: #2c3e50 !important;
+            font-family: 'Comic Sans MS', sans-serif !important;
         }}
 
         /* SUBIDA DE ARCHIVOS */
@@ -131,7 +117,7 @@ if modo_explicacion == "👶 Modo Niño (Para que tu sobrinito entienda)":
             background-color: #FAFAFA !important;
             border: 2px dashed #2c3e50 !important;
         }}
-        [data-testid="stFileUploader"] p, [data-testid="stFileUploader"] span, [data-testid="stFileUploader"] small {{
+        [data-testid="stFileUploader"] p, [data-testid="stFileUploader"] small {{
             color: #2c3e50 !important;
         }}
         [data-testid="stFileUploader"] button {{
@@ -145,6 +131,7 @@ if modo_explicacion == "👶 Modo Niño (Para que tu sobrinito entienda)":
             border-radius: 20px; 
             font-weight: bold; 
             border: 2px solid #2c3e50 !important;
+            font-family: 'Comic Sans MS', sans-serif !important;
         }}
         </style>
     """, unsafe_allow_html=True)
@@ -166,17 +153,6 @@ else:
             color: #38bdf8 !important; 
             font-family: 'Arial', sans-serif; 
             font-weight: bold; 
-        }
-        
-        /* SOLUCIÓN DEFINITIVA TEXTOS INTERNOS EN MODO OSCURO */
-        [data-testid="stChatMessageHeader"] div:first-child {
-            color: transparent !important;
-            font-size: 0px !important;
-            line-height: 0 !important;
-        }
-        [data-testid="stSidebarCollapsedControl"] span {
-            color: transparent !important;
-            font-size: 0px !important;
         }
         
         /* TEXTO DENTRO DE LOS BLOQUES DE CHAT NATIVOS */
@@ -210,7 +186,7 @@ else:
             background-color: #1e293b !important;
             border: 1px dashed #38bdf8 !important;
         }
-        [data-testid="stFileUploader"] p, [data-testid="stFileUploader"] span, [data-testid="stFileUploader"] small {
+        [data-testid="stFileUploader"] p, [data-testid="stFileUploader"] small {
             color: #FFFFFF !important;
         }
         [data-testid="stFileUploader"] button {
