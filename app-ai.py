@@ -53,7 +53,7 @@ if modo_explicacion != st.session_state.prev_modo:
         st.session_state.pastel_colors = ["#FAFAFA", elegidos[0], elegidos[1], elegidos[2]]
     st.session_state.prev_modo = modo_explicacion
 
-# --- SISTEMA DE ESTILOS DE ALTO CONTRASTE QUIRÚRGICO ---
+# --- SISTEMA DE ESTILOS DE ALTO CONTRASTE MODIFICADO ---
 if modo_explicacion == "👶 Modo Niño (Para que tu sobrinito entienda)":
     bg_chat = st.session_state.pastel_colors[0]
     bg_entorno = st.session_state.pastel_colors[1]
@@ -77,6 +77,13 @@ if modo_explicacion == "👶 Modo Niño (Para que tu sobrinito entienda)":
         .stApp .stMarkdown p, .stApp h1, .stApp h2, .stApp h3, .stApp label, .stApp span {{
             color: #2c3e50 !important;
             font-family: 'Comic Sans MS', sans-serif;
+        }}
+        
+        /* SOLUCIÓN AL TEXTO SMART_TOY ENCIMADO */
+        [data-testid="stChatMessageHeader"] div, [data-testid="stChatMessageHeader"] span {{
+            color: transparent !important;
+            -webkit-text-fill-color: transparent !important;
+            font-size: 0px !important;
         }}
         
         /* BARRA LATERAL (TEXTOS) */
@@ -141,7 +148,7 @@ else:
             background-color: #0f172a !important; 
         }
         
-        /* TEXTOS DEL CUERPO Y SIDEBAR (Solo a elementos de lectura, no a contenedores estructurales) */
+        /* TEXTOS DEL CUERPO Y SIDEBAR */
         .stApp .stMarkdown p, .stApp label, [data-testid="stSidebar"] p, [data-testid="stSidebar"] label {
             color: #FFFFFF !important;
             font-family: 'Arial', sans-serif;
@@ -153,6 +160,13 @@ else:
             font-weight: bold; 
         }
         
+        /* SOLUCIÓN AL TEXTO SMART_TOY ENCIMADO EN MODO OSCURO */
+        [data-testid="stChatMessageHeader"] div, [data-testid="stChatMessageHeader"] span {
+            color: transparent !important;
+            -webkit-text-fill-color: transparent !important;
+            font-size: 0px !important;
+        }
+        
         /* TEXTO DENTRO DE LOS BLOQUES DE CHAT NATIVOS */
         [data-testid="stChatMessage"] {
             background-color: #1e293b !important;
@@ -162,7 +176,7 @@ else:
             color: #FFFFFF !important;
         }
         
-        /* ENTRADA DE TEXTO (CHAT INPUT) SIN AFECTAR EL TEXTAREA INTERNO */
+        /* ENTRADA DE TEXTO */
         [data-testid="stChatInputContainer"] { 
             background-color: #0f172a !important; 
         }
@@ -198,7 +212,7 @@ else:
             color: white !important; 
             border-radius: 20px; 
             font-weight: bold !important;
-        }}
+        }
         </style>
     """, unsafe_allow_html=True)
 
