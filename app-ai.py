@@ -73,7 +73,7 @@ if modo_explicacion == "👶 Modo Niño (Para que tu sobrinito entienda)":
             background-color: {bg_zonas_rojas} !important;
         }}
         
-        /* TEXTOS DEL CUERPO PRINCIPAL (PROTEGE LOS SPANS DE LOS ÍCONOS) */
+        /* TEXTOS DEL CUERPO PRINCIPAL */
         .stApp .stMarkdown p, .stApp h1, .stApp h2, .stApp h3, .stApp label {{
             color: #2c3e50 !important;
             font-family: 'Comic Sans MS', sans-serif;
@@ -112,7 +112,7 @@ if modo_explicacion == "👶 Modo Niño (Para que tu sobrinito entienda)":
             font-family: 'Comic Sans MS', sans-serif !important;
         }}
 
-        /* SUBIDA DE ARCHIVOS */
+        /* SUBIDA DE ARCHIVOS MODO NIÑO */
         [data-testid="stFileUploader"] section {{
             background-color: #FAFAFA !important;
             border: 2px dashed #2c3e50 !important;
@@ -181,13 +181,16 @@ else:
             -webkit-text-fill-color: #94a3b8 !important;
         }
 
-        /* SUBIDA DE ARCHIVOS */
+        /* SUBIDA DE ARCHIVOS MODO OSCURO (CORREGIDO PARA EL TEXTO SMALL DE LA CAPTURA) */
         [data-testid="stFileUploader"] section {
             background-color: #1e293b !important;
             border: 1px dashed #38bdf8 !important;
         }
-        [data-testid="stFileUploader"] p, [data-testid="stFileUploader"] small {
+        [data-testid="stFileUploader"] p {
             color: #FFFFFF !important;
+        }
+        [data-testid="stFileUploader"] small {
+            color: #94a3b8 !important; /* Gris claro de alto contraste */
         }
         [data-testid="stFileUploader"] button {
             background-color: #38bdf8 !important;
@@ -332,3 +335,4 @@ if prompt:
                 else:
                     st.error("🎒 **¡Un pequeño tropiezo en el salón de clases!** No pudimos conectar con ninguna clave. Por favor, espera unos segundos e inténtalo de nuevo.")
                     st.caption(f"🔧 *Nota técnica del error:* `{ultimo_error}`")
+                    
