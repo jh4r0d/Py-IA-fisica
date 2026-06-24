@@ -53,6 +53,7 @@ if modo_explicacion != st.session_state.prev_modo:
         st.session_state.pastel_colors = ["#FAFAFA", elegidos[0], elegidos[1], elegidos[2]]
     st.session_state.prev_modo = modo_explicacion
 
+# --- INYECCIÓN DE ESTILOS CON CONTRASTE ALTO SEGÚN EL ENTORNO ---
 if modo_explicacion == "👶 Modo Niño (Para que tu sobrinito entienda)":
     bg_chat = st.session_state.pastel_colors[0]
     bg_entorno = st.session_state.pastel_colors[1]
@@ -61,47 +62,38 @@ if modo_explicacion == "👶 Modo Niño (Para que tu sobrinito entienda)":
     
     st.markdown(f"""
         <style>
+        /* CONTRASTE MODO CLARO / PASTEL NIÑOS: Todo el texto base debe ser Oscuro (#2c3e50) */
         .stApp, [data-testid="stHeader"], [data-testid="stSidebarCollapsedControl"] {{
             background-color: {bg_entorno} !important;
         }}
         [data-testid="stSidebar"] {{
             background-color: {bg_zonas_rojas} !important;
         }}
-        [data-testid="stSidebar"] h1, [data-testid="stSidebar"] h2, [data-testid="stSidebar"] h3, [data-testid="stSidebar"] p, [data-testid="stSidebar"] label, [data-testid="stSidebar"] span {{
+        [data-testid="stSidebar"] h1, [data-testid="stSidebar"] h2, [data-testid="stSidebar"] h3, [data-testid="stSidebar"] p, [data-testid="stSidebar"] label, [data-testid="stSidebar"] span, [data-testid="stSidebar"] li {{
             color: #FFFFFF !important;
         }}
         [data-testid="stBottomBlockContainer"] {{
             background-color: {bg_zonas_rojas} !important;
         }}
+        
+        /* Modificadores globales de texto en el cuerpo principal */
+        .stApp p, .stApp span, .stApp label, .stApp li, .stApp div, .stApp h1, .stApp h2, .stApp h3 {{
+            color: #2c3e50 !important;
+            font-family: 'Comic Sans MS', sans-serif;
+        }}
+        
+        /* Bloques de chat */
         .stChatMessage, [data-testid="stChatMessage"] {{
             background-color: {bg_chat} !important;
             border-radius: 15px !important;
             border: 3px solid {btn_color} !important;
             padding: 15px !important;
         }}
-        .stChatMessage * {{
+        .stChatMessage p, .stChatMessage span, .stChatMessage li, .stChatMessage div {{
             color: #2c3e50 !important;
         }}
         
-        /* CORRECCIÓN DEL FILE UPLOADER EN MODO NIÑO */
-        [data-testid="stFileUploader"] section {{
-            background-color: #FAFAFA !important;
-            border: 2px dashed #2c3e50 !important;
-        }}
-        [data-testid="stFileUploader"] p, [data-testid="stFileUploader"] span, [data-testid="stFileUploader"] small {{
-            color: #2c3e50 !important;
-        }}
-        [data-testid="stFileUploader"] button {{
-            background-color: #2c3e50 !important;
-            color: #FFFFFF !important;
-            border: none !important;
-        }}
-        [data-testid="stFileUploader"] button:hover {{
-            background-color: #1a252f !important;
-            color: #FFFFFF !important;
-        }}
-
-        /* CORRECCIÓN DE LA BARRA DE CHAT EN MODO NIÑO */
+        /* Entrada de texto del chat */
         [data-testid="stChatInputContainer"] {{
             background-color: transparent !important;
             border: none !important;
@@ -120,24 +112,28 @@ if modo_explicacion == "👶 Modo Niño (Para que tu sobrinito entienda)":
             color: #7f8c8d !important;
             -webkit-text-fill-color: #7f8c8d !important;
         }}
-        
-        h1 {{ 
-            color: #2c3e50 !important; 
-            text-align: center; 
-            font-family: 'Comic Sans MS', sans-serif; 
-            font-weight: bold; 
+
+        /* Componente de subida de archivos */
+        [data-testid="stFileUploader"] section {{
+            background-color: #FAFAFA !important;
+            border: 2px dashed #2c3e50 !important;
         }}
+        [data-testid="stFileUploader"] p, [data-testid="stFileUploader"] span, [data-testid="stFileUploader"] small {{
+            color: #2c3e50 !important;
+        }}
+        [data-testid="stFileUploader"] button {{
+            background-color: #2c3e50 !important;
+            color: #FFFFFF !important;
+            border: none !important;
+        }}
+        
+        /* Botones generales */
         .stButton>button {{ 
             background-color: {btn_color} !important; 
             color: #1c1c1c !important; 
             border-radius: 20px; 
             font-weight: bold; 
             border: 2px solid #2c3e50 !important;
-        }}
-        p, span, label, li, .stMarkdown {{ 
-            color: #2c3e50 !important; 
-            font-family: 'Comic Sans MS', sans-serif; 
-            font-weight: bold !important;
         }}
         .stAlert p {{
             color: #1c1c1c !important;
@@ -147,13 +143,38 @@ if modo_explicacion == "👶 Modo Niño (Para que tu sobrinito entienda)":
 else:
     st.markdown("""
         <style>
-        .stApp, [data-testid="stSidebar"], [data-testid="stHeader"], [data-testid="stBottomBlockContainer"] { background-color: #0f172a !important; }
+        /* CONTRASTE MODO OSCURO (UNI/EXP): Todo el texto base debe ser Blanco Puro (#FFFFFF) o Celeste (#38bdf8) */
+        .stApp, [data-testid="stSidebar"], [data-testid="stHeader"], [data-testid="stBottomBlockContainer"] { 
+            background-color: #0f172a !important; 
+        }
         
-        /* CORRECCIÓN DE LA BARRA DE CHAT EN MODO OSCURO */
+        /* Forzar texto blanco en toda la aplicación principal para que resalte sobre el azul oscuro */
+        .stApp p, .stApp span, .stApp label, .stApp li, .stApp div, [data-testid="stSidebar"] p, [data-testid="stSidebar"] label, [data-testid="stSidebar"] span, [data-testid="stSidebar"] li {
+            color: #FFFFFF !important;
+            font-family: 'Arial', sans-serif;
+        }
+        
+        /* Títulos */
+        h1, h2, h3 { 
+            color: #38bdf8 !important; 
+            font-family: 'Arial', sans-serif; 
+            font-weight: bold; 
+        }
+        
+        /* Cajas de mensajes dentro del chat */
+        .stChatMessage, [data-testid="stChatMessage"] {
+            background-color: #1e293b !important;
+            border: 1px solid #334155 !important;
+        }
+        .stChatMessage p, .stChatMessage span, .stChatMessage li, .stChatMessage div {
+            color: #FFFFFF !important;
+        }
+        
+        /* Entrada de texto de chat (Fondo intermedio, letras blancas nítidas) */
         [data-testid="stChatInputContainer"] { background-color: #0f172a !important; }
         [data-testid="stChatInput"] {
             background-color: #1e293b !important;
-            border: 1px solid #38bdf8 !important;
+            border: 2px solid #38bdf8 !important;
         }
         [data-testid="stChatInput"] textarea {
             color: #FFFFFF !important;
@@ -164,7 +185,7 @@ else:
             -webkit-text-fill-color: #94a3b8 !important;
         }
 
-        /* CORRECCIÓN DEL FILE UPLOADER EN MODO OSCURO */
+        /* Subida de archivos */
         [data-testid="stFileUploader"] section {
             background-color: #1e293b !important;
             border: 1px dashed #38bdf8 !important;
@@ -175,14 +196,17 @@ else:
         [data-testid="stFileUploader"] button {
             background-color: #38bdf8 !important;
             color: #0f172a !important;
+            font-weight: bold !important;
         }
 
-        [data-testid="stSidebar"] h1, [data-testid="stSidebar"] h2, [data-testid="stSidebar"] h3, [data-testid="stSidebar"] p, [data-testid="stSidebar"] label, [data-testid="stSidebar"] span {
-            color: #FFFFFF !important;
-        }
-        h1 { color: #38bdf8 !important; text-align: center; font-family: 'Arial', sans-serif; font-weight: bold; }
+        /* Botones decorativos */
         .stButton { text-align: center !important; }
-        .stButton>button { background-color: #ec4899 !important; color: white !important; border-radius: 20px; }
+        .stButton>button { 
+            background-color: #ec4899 !important; 
+            color: white !important; 
+            border-radius: 20px; 
+            font-weight: bold !important;
+        }
         </style>
     """, unsafe_allow_html=True)
 
@@ -275,26 +299,24 @@ if prompt:
     with st.chat_message("assistant"):
         with st.spinner("Buscando las tizas y borrando la pizarra... 👨‍🏫"):
             
-            # --- SISTEMA DE ROTACIÓN INTELIGENTE DE RESPALDO (FAILOVER) ---
             response = None
             ultimo_error = ""
-            random.shuffle(POOL_KEYS) # Desordenamos las llaves para distribuir el uso
+            random.shuffle(POOL_KEYS)
             
             for key in POOL_KEYS:
                 try:
-                    client = genai.Client(api_key=key)
+                    client = genai.Client(api_key=key.strip())
                     response = client.models.generate_content(
                         model='gemini-2.5-flash',
                         contents=contenido_solicitud,
                         config={"system_instruction": system_instruction, "temperature": 0.5}
                     )
                     if response:
-                        break # Si tuvo éxito, rompemos el bucle y continuamos
+                        break
                 except Exception as e:
                     ultimo_error = str(e)
-                    continue # Si falla una llave, pasa automáticamente a la siguiente
+                    continue
 
-            # --- VALIDACIÓN DE RESULTADOS ---
             if response:
                 try:
                     respuesta_texto = response.text
@@ -308,7 +330,6 @@ if prompt:
                 except Exception as e:
                     st.error("🎒 **¡Un pequeño tropiezo en el salón de clases!** No pudimos procesar tu mensaje. Por favor, espera unos segundos e inténtalo de nuevo.")
             else:
-                # Si todas las llaves fallaron por límite de cuota
                 if "429" in ultimo_error or "quota" in ultimo_error.lower() or "limit" in ultimo_error.lower():
                     segundos_espera = "10"
                     match = re.search(r'retry in ([\d\.]+)', ultimo_error)
@@ -317,3 +338,4 @@ if prompt:
                     st.warning(f"⏳ **¡Uy, un segundo!** Como este es un chatbot educativo gratuito, tenemos que tomar turnos para usar la pizarra. Por favor, **espera {segundos_espera} segundos** y vuelve a enviar tu pregunta. ¡Muchas gracias por tu paciencia! 🎒")
                 else:
                     st.error("🎒 **¡Un pequeño tropiezo en el salón de clases!** No pudimos conectar con ninguna clave. Por favor, espera unos segundos e inténtalo de nuevo.")
+                    st.caption(f"🔧 *Nota técnica del error:* `{ultimo_error}`")
