@@ -74,7 +74,7 @@ if modo_explicacion == "👶 Modo Niño (Para que tu sobrinito entienda)":
         }}
         
         /* TEXTOS DEL CUERPO PRINCIPAL */
-        .stApp .stMarkdown p, .stApp h1, .stApp h2, .stApp h3, .stApp label {{
+        .stApp .stMarkdown p, .stApp h1, .stApp h2, .stApp h3, .stApp label, .stApp ol, .stApp ul, .stApp li {{
             color: #2c3e50 !important;
             font-family: 'Comic Sans MS', sans-serif;
         }}
@@ -91,7 +91,7 @@ if modo_explicacion == "👶 Modo Niño (Para que tu sobrinito entienda)":
             border: 3px solid {btn_color} !important;
             padding: 15px !important;
         }}
-        .stChatMessage .stMarkdown p {{
+        .stChatMessage .stMarkdown p, .stChatMessage ol, .stChatMessage ul, .stChatMessage li {{
             color: #2c3e50 !important;
         }}
         
@@ -143,8 +143,9 @@ else:
             background-color: #0f172a !important; 
         }
         
-        /* TEXTOS DEL CUERPO Y SIDEBAR */
-        .stApp .stMarkdown p, .stApp label, [data-testid="stSidebar"] p, [data-testid="stSidebar"] label {
+        /* TEXTOS DEL CUERPO Y SIDEBAR (INCLUYE LISTAS OL, UL, LI DE LA CAPTURA) */
+        .stApp .stMarkdown p, .stApp label, [data-testid="stSidebar"] p, [data-testid="stSidebar"] label,
+        .stApp ol, .stApp ul, .stApp li {
             color: #FFFFFF !important;
             font-family: 'Arial', sans-serif;
         }
@@ -160,7 +161,7 @@ else:
             background-color: #1e293b !important;
             border: 1px solid #334155 !important;
         }
-        [data-testid="stChatMessage"] .stMarkdown p {
+        [data-testid="stChatMessage"] .stMarkdown p, [data-testid="stChatMessage"] ol, [data-testid="stChatMessage"] ul, [data-testid="stChatMessage"] li {
             color: #FFFFFF !important;
         }
         
@@ -181,7 +182,7 @@ else:
             -webkit-text-fill-color: #94a3b8 !important;
         }
 
-        /* SUBIDA DE ARCHIVOS MODO OSCURO (CORREGIDO PARA EL TEXTO SMALL DE LA CAPTURA) */
+        /* SUBIDA DE ARCHIVOS MODO OSCURO */
         [data-testid="stFileUploader"] section {
             background-color: #1e293b !important;
             border: 1px dashed #38bdf8 !important;
@@ -190,7 +191,7 @@ else:
             color: #FFFFFF !important;
         }
         [data-testid="stFileUploader"] small {
-            color: #94a3b8 !important; /* Gris claro de alto contraste */
+            color: #94a3b8 !important;
         }
         [data-testid="stFileUploader"] button {
             background-color: #38bdf8 !important;
@@ -335,4 +336,3 @@ if prompt:
                 else:
                     st.error("🎒 **¡Un pequeño tropiezo en el salón de clases!** No pudimos conectar con ninguna clave. Por favor, espera unos segundos e inténtalo de nuevo.")
                     st.caption(f"🔧 *Nota técnica del error:* `{ultimo_error}`")
-                    
