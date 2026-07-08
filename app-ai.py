@@ -143,7 +143,7 @@ else:
             background-color: #0f172a !important; 
         }
         
-        /* TEXTOS DEL CUERPO Y SIDEBAR (INCLUYE LISTAS OL, UL, LI DE LA CAPTURA) */
+        /* TEXTOS DEL CUERPO Y SIDEBAR */
         .stApp .stMarkdown p, .stApp label, [data-testid="stSidebar"] p, [data-testid="stSidebar"] label,
         .stApp ol, .stApp ul, .stApp li {
             color: #FFFFFF !important;
@@ -211,8 +211,8 @@ else:
 st.title("👨‍🏫 AIrtin: Tu Profesor de Física 1")
 st.write("¡A ver, entren, entren! Saquen una hoja... mentira. Pregúntame lo que quieras de física, teoría o problemas. Puedes hablarme, escribirme o subir la foto de ese ejercicio que no te sale.")
 
+# --- POOL DE CLAVES TOTALMENTE COMPATIBLES (Formato AIzaSy nativo) ---
 POOL_KEYS = [
-    "AQ.Ab8RN6JvCsVZXOqrtj1qfrR1o0z0GYW5gzfR5iArhc6tihqO6Q",
     "AIzaSyB7tGeuVKL_1Wz85UZdqCeL60Eh8YHD_6w",
     "AIzaSyDBAG8oax2hRyuIzuSIWPp5-H-dvUNP_VE"
 ]
@@ -298,9 +298,12 @@ if prompt:
             
             response = None
             ultimo_error = ""
-            random.shuffle(POOL_KEYS)
             
-            for key in POOL_KEYS:
+            # Mezclamos las llaves nativas para la rotación automática
+            pool_de_intentos = POOL_KEYS.copy()
+            random.shuffle(pool_de_intentos)
+            
+            for key in pool_de_intentos:
                 try:
                     client = genai.Client(api_key=key.strip())
                     response = client.models.generate_content(
