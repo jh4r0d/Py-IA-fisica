@@ -53,7 +53,7 @@ if modo_explicacion != st.session_state.prev_modo:
         st.session_state.pastel_colors = ["#FAFAFA", elegidos[0], elegidos[1], elegidos[2]]
     st.session_state.prev_modo = modo_explicacion
 
-# --- SISTEMA DE ESTILOS DE ALTO CONTRASTE MODIFICADO ---
+# --- SISTEMA DE ESTILOS DE ALTO CONTRASTE ---
 if modo_explicacion == "👶 Modo Niño (Para que tu sobrinito entienda)":
     bg_chat = st.session_state.pastel_colors[0]
     bg_entorno = st.session_state.pastel_colors[1]
@@ -62,7 +62,6 @@ if modo_explicacion == "👶 Modo Niño (Para que tu sobrinito entienda)":
     
     st.markdown(f"""
         <style>
-        /* FONDOS MODO NIÑO */
         .stApp, [data-testid="stHeader"], [data-testid="stSidebarCollapsedControl"] {{
             background-color: {bg_entorno} !important;
         }}
@@ -72,19 +71,13 @@ if modo_explicacion == "👶 Modo Niño (Para que tu sobrinito entienda)":
         [data-testid="stBottomBlockContainer"] {{
             background-color: {bg_zonas_rojas} !important;
         }}
-        
-        /* TEXTOS DEL CUERPO PRINCIPAL */
         .stApp .stMarkdown p, .stApp h1, .stApp h2, .stApp h3, .stApp label, .stApp ol, .stApp ul, .stApp li {{
             color: #2c3e50 !important;
             font-family: 'Comic Sans MS', sans-serif;
         }}
-        
-        /* BARRA LATERAL (TEXTOS) */
         [data-testid="stSidebar"] h1, [data-testid="stSidebar"] h2, [data-testid="stSidebar"] h3, [data-testid="stSidebar"] p, [data-testid="stSidebar"] label {{
             color: #FFFFFF !important;
         }}
-        
-        /* CAJAS DE MENSAJES */
         .stChatMessage, [data-testid="stChatMessage"] {{
             background-color: {bg_chat} !important;
             border-radius: 15px !important;
@@ -94,8 +87,6 @@ if modo_explicacion == "👶 Modo Niño (Para que tu sobrinito entienda)":
         .stChatMessage .stMarkdown p, .stChatMessage ol, .stChatMessage ul, .stChatMessage li {{
             color: #2c3e50 !important;
         }}
-        
-        /* ENTRADA DE TEXTO DEL CHAT */
         [data-testid="stChatInputContainer"] {{
             background-color: transparent !important;
             border: none !important;
@@ -111,8 +102,6 @@ if modo_explicacion == "👶 Modo Niño (Para que tu sobrinito entienda)":
             -webkit-text-fill-color: #2c3e50 !important;
             font-family: 'Comic Sans MS', sans-serif !important;
         }}
-
-        /* SUBIDA DE ARCHIVOS MODO NIÑO */
         [data-testid="stFileUploader"] section {{
             background-color: #FAFAFA !important;
             border: 2px dashed #2c3e50 !important;
@@ -124,7 +113,6 @@ if modo_explicacion == "👶 Modo Niño (Para que tu sobrinito entienda)":
             background-color: #2c3e50 !important;
             color: #FFFFFF !important;
         }}
-        
         .stButton>button {{ 
             background-color: {btn_color} !important; 
             color: #1c1c1c !important; 
@@ -138,25 +126,19 @@ if modo_explicacion == "👶 Modo Niño (Para que tu sobrinito entienda)":
 else:
     st.markdown("""
         <style>
-        /* FONDOS MODO OSCURO (UNIVERSITARIO / EXPERIMENTO) */
         .stApp, [data-testid="stSidebar"], [data-testid="stHeader"], [data-testid="stBottomBlockContainer"] { 
             background-color: #0f172a !important; 
         }
-        
-        /* TEXTOS DEL CUERPO Y SIDEBAR */
         .stApp .stMarkdown p, .stApp label, [data-testid="stSidebar"] p, [data-testid="stSidebar"] label,
         .stApp ol, .stApp ul, .stApp li {
             color: #FFFFFF !important;
             font-family: 'Arial', sans-serif;
         }
-        
         h1, h2, h3 { 
             color: #38bdf8 !important; 
             font-family: 'Arial', sans-serif; 
             font-weight: bold; 
         }
-        
-        /* TEXTO DENTRO DE LOS BLOQUES DE CHAT NATIVOS */
         [data-testid="stChatMessage"] {
             background-color: #1e293b !important;
             border: 1px solid #334155 !important;
@@ -164,8 +146,6 @@ else:
         [data-testid="stChatMessage"] .stMarkdown p, [data-testid="stChatMessage"] ol, [data-testid="stChatMessage"] ul, [data-testid="stChatMessage"] li {
             color: #FFFFFF !important;
         }
-        
-        /* ENTRADA DE TEXTO */
         [data-testid="stChatInputContainer"] { 
             background-color: #0f172a !important; 
         }
@@ -181,8 +161,6 @@ else:
             color: #94a3b8 !important;
             -webkit-text-fill-color: #94a3b8 !important;
         }
-
-        /* SUBIDA DE ARCHIVOS MODO OSCURO */
         [data-testid="stFileUploader"] section {
             background-color: #1e293b !important;
             border: 1px dashed #38bdf8 !important;
@@ -198,7 +176,6 @@ else:
             color: #0f172a !important;
             font-weight: bold !important;
         }
-
         .stButton>button { 
             background-color: #ec4899 !important; 
             color: white !important; 
@@ -211,11 +188,11 @@ else:
 st.title("👨‍🏫 AIrtin: Tu Profesor de Física 1")
 st.write("¡A ver, entren, entren! Saquen una hoja... mentira. Pregúntame lo que quieras de física, teoría o problemas. Puedes hablarme, escribirme o subir la foto de ese ejercicio que no te sale.")
 
-# --- POOL DE CLAVES TOTALMENTE COMPATIBLES (Formato AIzaSy nativo) ---
-POOL_KEYS = [
-    "AIzaSyB7tGeuVKL_1Wz85UZdqCeL60Eh8YHD_6w",
-    "AIzaSyDBAG8oax2hRyuIzuSIWPp5-H-dvUNP_VE"
-]
+# --- OBTENCIÓN SEGURA DE API KEY DESDE STREAMLIT SECRETS ---
+if "gemini" in st.secrets:
+    POOL_KEYS = [k.strip() for k in st.secrets["gemini"]["api_keys"].split(",")]
+else:
+    POOL_KEYS = []
 
 st.sidebar.markdown("---")
 st.sidebar.header("📁 Adjuntar Ejercicio")
@@ -299,23 +276,25 @@ if prompt:
             response = None
             ultimo_error = ""
             
-            # Mezclamos las llaves nativas para la rotación automática
-            pool_de_intentos = POOL_KEYS.copy()
-            random.shuffle(pool_de_intentos)
-            
-            for key in pool_de_intentos:
-                try:
-                    client = genai.Client(api_key=key.strip())
-                    response = client.models.generate_content(
-                        model='gemini-2.5-flash',
-                        contents=contenido_solicitud,
-                        config={"system_instruction": system_instruction, "temperature": 0.5}
-                    )
-                    if response:
-                        break
-                except Exception as e:
-                    ultimo_error = str(e)
-                    continue
+            if not POOL_KEYS:
+                ultimo_error = "No hay claves configuradas en los Secrets de Streamlit."
+            else:
+                pool_de_intentos = POOL_KEYS.copy()
+                random.shuffle(pool_de_intentos)
+                
+                for key in pool_de_intentos:
+                    try:
+                        client = genai.Client(api_key=key.strip())
+                        response = client.models.generate_content(
+                            model='gemini-2.5-flash',
+                            contents=contenido_solicitud,
+                            config={"system_instruction": system_instruction, "temperature": 0.5}
+                        )
+                        if response:
+                            break
+                    except Exception as e:
+                        ultimo_error = str(e)
+                        continue
 
             if response:
                 try:
@@ -337,5 +316,5 @@ if prompt:
                         segundos_espera = str(int(float(match.group(1))) + 1)
                     st.warning(f"⏳ **¡Uy, un segundo!** Como este es un chatbot educativo gratuito, tenemos que tomar turnos para usar la pizarra. Por favor, **espera {segundos_espera} segundos** y vuelve a enviar tu pregunta. ¡Muchas gracias por tu paciencia! 🎒")
                 else:
-                    st.error("🎒 **¡Un pequeño tropiezo en el salón de clases!** No pudimos conectar con ninguna clave. Por favor, espera unos segundos e inténtalo de nuevo.")
+                    st.error("🎒 **¡Un pequeño tropiezo en el salón de clases!** No pudimos conectar con ninguna clave. Por favor, coloca claves válidas en la configuración de Secrets.")
                     st.caption(f"🔧 *Nota técnica del error:* `{ultimo_error}`")
